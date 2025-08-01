@@ -16,7 +16,7 @@ A simple, fast Python script for scraping technical documentation from websites 
 ## Requirements
 
 - Python 3.11+
-- Poetry (for dependency management)
+- `uv` (for dependency management)
 - pandoc (for HTML generation)
 - weasyprint (for PDF generation)
 
@@ -28,19 +28,19 @@ A simple, fast Python script for scraping technical documentation from websites 
    cd docs_scraper
    ```
 
-2. **Install dependencies using Poetry:**
+2. **Install `uv` (if not already installed):**
    ```bash
-   poetry install --no-root
+   curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
 
 3. **Install pandoc (if not already installed):**
    ```bash
    # macOS
    brew install pandoc
-   
+
    # Ubuntu/Debian
    sudo apt-get install pandoc
-   
+
    # Windows
    # Download from https://pandoc.org/installing.html
    ```
@@ -52,7 +52,7 @@ A simple, fast Python script for scraping technical documentation from websites 
 Run the scraper with your target documentation site:
 
 ```bash
-poetry run python docs-crawler.py https://docs.example.com/
+uv run docs-crawler.py https://docs.example.com/
 ```
 
 This will:
@@ -67,13 +67,13 @@ This will:
 
 ```bash
 # Scrape Cartridge documentation
-poetry run python docs-crawler.py https://docs.cartridge.gg/
+uv run docs-crawler.py https://docs.cartridge.gg/
 
 # Scrape any other documentation site
-poetry run python docs-crawler.py https://docs.yom.net/
+uv run docs-crawler.py https://docs.yom.net/
 
 # Works with or without trailing slash
-poetry run python docs-crawler.py https://docs.example.com
+uv run docs-crawler.py https://docs.example.com
 ```
 
 ### Advanced Configuration
@@ -118,9 +118,9 @@ TIMEOUT       = 30                            # Request timeout in seconds
 ## Troubleshooting
 
 ### Import Errors
-If you get import errors, make sure you're running the script with Poetry:
+If you get import errors, make sure you're running the script with UV:
 ```bash
-poetry run python docs-crawler.py
+uv run docs-crawler.py
 ```
 
 ### PDF Generation Issues
