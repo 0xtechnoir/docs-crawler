@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""
-docs.yom.net → single PDF (images inlined)
-
-Deps:
-  pip install aiohttp beautifulsoup4 lxml markdownify tqdm weasyprint
-System libs for WeasyPrint (Ubuntu/Debian):
-  sudo apt-get install libpango-1.0-0 libpangocairo-1.0-0 libcairo2
-"""
-
-import asyncio, sys, time
+import asyncio, sys, time, argparse
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Set, Tuple
@@ -28,9 +19,6 @@ except ImportError:
     WEASYPRINT_AVAILABLE = False
 
 # ---------- CONFIG ----------
-# Change this to scrape a different documentation site
-BASE          = "https://docs.cartridge.gg/"  # Change this to your target site
-SITEMAP_URL   = f"{BASE}/sitemap.xml"
 UA            = "NotebookLM-prep-crawler/1.1 (+contact: you@example.com)"
 OUT_FILE      = Path("doc_dump")
 CONCURRENCY   = 6
@@ -47,8 +35,36 @@ class Fetch:
     ctype: Optional[str] = None
     err: Optional[str] = None
 
-def same_host(u, base=BASE): return urlparse(u).netloc == urlparse(base).netloc
-def ok_content(u):           return same_host(u) and not urlparse(u).query
+def same_host(u, base): return urlparse(u).netloc == urlparse(base).netloc
+def ok_content(u, base_url):           
+    if not same_host(u, base_url): 
+        return False
+    
+    # Parse URL to check for unwanted patterns
+    parsed = urlparse(u)
+    
+    # Skip URLs with query parameters (usually dynamic content)
+    if parsed.query:
+        return False
+    
+    # Skip common non-documentation paths
+    path = parsed.path.lower()
+    skip_patterns = [
+        '/admin', '/api/', '/login', '/logout', '/register', '/signup',
+        '/search', '/tag/', '/category/', '/author/', '/user/',
+        '/wp-admin', '/wp-content', '/wp-includes',  # WordPress
+        '/_next/', '/static/', '/assets/', '/js/', '/css/', '/images/',  # Static assets
+        '/feed', '/rss', '/atom',  # RSS feeds
+        '/sitemap', '/robots.txt',  # SEO files
+        '/mailto:', '/tel:',  # Contact links
+        '/#',  # Anchor links
+    ]
+    
+    for pattern in skip_patterns:
+        if pattern in path:
+            return False
+    
+    return True
 
 async def req(session, url, binary=False, tries=MAX_RETRIES):
     for a in range(1, tries + 1):
@@ -65,7 +81,7 @@ async def req(session, url, binary=False, tries=MAX_RETRIES):
 
 def xml_items(root, tag): return [el.text.strip() for el in root.iter() if el.tag.endswith(tag) and el.text]
 
-async def sitemap_urls(session, url) -> List[str]:
+async def sitemap_urls(session, url, base_url) -> List[str]:
     seen, out, stack = set(), [], [url]
     while stack:
         sm = stack.pop()
@@ -81,9 +97,109 @@ async def sitemap_urls(session, url) -> List[str]:
         elif root.tag.endswith("urlset"):
             # Preserve order by adding URLs in the order they appear in the sitemap
             for u in xml_items(root, "loc"):
-                if ok_content(u) and u not in out:
+                if ok_content(u, base_url) and u not in out:
                     out.append(u)
     return out
+
+def sort_urls_logically(urls: List[str], base_url: str) -> List[str]:
+    """Sort URLs in a logical order for documentation"""
+    # Remove duplicate URLs with different anchor fragments
+    unique_urls = {}
+    for url in urls:
+        parsed = urlparse(url)
+        # Use URL without anchor fragment as key
+        base_url_no_anchor = f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+        if base_url_no_anchor not in unique_urls:
+            unique_urls[base_url_no_anchor] = url
+    
+    urls = list(unique_urls.values())
+    
+    def url_priority(url: str) -> tuple:
+        parsed = urlparse(url)
+        path = parsed.path.lower()
+        path_parts = [p for p in path.split('/') if p]
+        
+        # Priority 1: Homepage
+        if path in ['', '/', '/docs', '/documentation']:
+            return (0, '', 0, 0, path)
+        
+        # Get the main section (first path part)
+        main_section = path_parts[0] if path_parts else ''
+        
+        # Priority 2: Shorter paths within each section (likely overview/intro pages)
+        # Priority 3: Longer paths within each section (likely detailed pages)
+        return (1, main_section, len(path_parts), path)
+    
+    return sorted(urls, key=url_priority)
+
+async def crawl_site_for_pages(session, base_url: str) -> List[str]:
+    """Fallback: crawl the site to discover pages when no sitemap is available"""
+    print("No sitemap found, crawling site to discover pages...")
+    
+    discovered_urls = []  # Use list to preserve discovery order
+    discovered_set = set()  # For fast lookup
+    to_visit = [base_url]
+    visited = set()
+    
+    while to_visit and len(discovered_urls) < 100:  # Limit to prevent infinite crawling
+        current_url = to_visit.pop(0)
+        if current_url in visited:
+            continue
+        visited.add(current_url)
+        
+        try:
+            res = await req(session, current_url)
+            if not res.text:
+                continue
+                
+            soup = BeautifulSoup(res.text, "lxml")
+            
+            # Find all links on the page
+            for link in soup.find_all("a", href=True):
+                href = link["href"]
+                
+                # Convert relative URLs to absolute
+                if href.startswith("/"):
+                    full_url = urljoin(base_url, href)
+                elif href.startswith("http"):
+                    full_url = href
+                else:
+                    continue
+                
+                # Only include URLs from the same domain
+                if urlparse(full_url).netloc == urlparse(base_url).netloc:
+                    # Filter for documentation pages (avoid admin, api, etc.)
+                    if ok_content(full_url, base_url) and full_url not in discovered_set:
+                        discovered_set.add(full_url)
+                        discovered_urls.append(full_url)  # Preserve discovery order
+                        to_visit.append(full_url)
+                        
+        except Exception as e:
+            print(f"Error crawling {current_url}: {e}")
+            continue
+    
+    # Sort the discovered URLs logically
+    sorted_urls = sort_urls_logically(discovered_urls, base_url)
+    return sorted_urls
+
+async def discover_pages(session, base_url: str, sitemap_url: str) -> List[str]:
+    """Try sitemap first, fall back to crawling if no sitemap exists"""
+    print(f"Trying sitemap at: {sitemap_url}")
+    
+    # Try sitemap first
+    try:
+        sitemap_pages = await sitemap_urls(session, sitemap_url, base_url)
+        if sitemap_pages:
+            print(f"✅ Successfully found {len(sitemap_pages)} pages from sitemap")
+            return sitemap_pages
+        else:
+            print("❌ Sitemap found but no pages extracted")
+    except Exception as e:
+        print(f"❌ Sitemap not found or invalid: {e}")
+    
+    # Fall back to crawling
+    print("🔄 Falling back to crawling...")
+    return await crawl_site_for_pages(session, base_url)
 
 
 # ----------------------------------------------
@@ -226,10 +342,27 @@ def save_markdown(md_text: str, out_path: Path):
     
     print("The markdown file is ready for NotebookLM")
 
-async def main():
+async def main(base_url: str):
+    # Ensure base_url ends with a slash
+    if not base_url.endswith('/'):
+        base_url = base_url + '/'
+    
+    sitemap_url = f"{base_url}sitemap.xml"
+    
     async with aiohttp.ClientSession(headers={"User-Agent": UA}) as s:
-        pages = await sitemap_urls(s, SITEMAP_URL)
+        pages = await discover_pages(s, base_url, sitemap_url)
         print(f"Discovered {len(pages)} pages.")
+        
+        # Debug: Print discovered pages in order
+        print("\nDiscovered pages in order:")
+        for i, page in enumerate(pages, 1):  # Show ALL pages
+            print(f"  {i:2d}. {page}")
+        print()
+        
+        if not pages:
+            print("No pages discovered. Check the BASE URL and ensure the site is accessible.")
+            return
+            
         sem, results = asyncio.Semaphore(CONCURRENCY), {}
         async def worker(u):
             async with sem:
@@ -242,7 +375,12 @@ async def main():
     print("Compiling markdown...")
     # Extract domain name from BASE URL for the title
     from urllib.parse import urlparse
-    domain = urlparse(BASE).netloc
+    domain = urlparse(base_url).netloc
+    
+    # Print the final order of pages as they appear in the document
+    print("\nFinal document order:")
+    for i, page in enumerate(pages, 1):
+        print(f"{i:2d}. {page}")
     
     all_md = (
         f"# {domain} — Snapshot ({time.strftime('%Y-%m-%d')})\n\n"
@@ -253,5 +391,23 @@ async def main():
     save_markdown(all_md, OUT_FILE)
     print("Done!")
 
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        description="Universal documentation scraper that creates clean markdown and PDF output",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  poetry run python docs-crawler.py https://docs.cartridge.gg/
+  poetry run python docs-crawler.py https://docs.example.com
+  poetry run python docs-crawler.py https://docs.yom.net/
+        """
+    )
+    parser.add_argument(
+        "base_url",
+        help="Base URL of the documentation site to scrape (e.g., https://docs.example.com/)"
+    )
+    return parser.parse_args()
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    args = parse_arguments()
+    asyncio.run(main(args.base_url))

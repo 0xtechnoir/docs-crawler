@@ -29,5 +29,2119 @@
 <blockquote>
 <p>Clean documentation content extracted from sitemap.</p>
 </blockquote>
+<h2>Cartridge Documentation</h2>
+<p><strong>Source:</strong> https://docs.cartridge.gg/#vocs-content</p>
+<h1>High Performance Tooling and Infrastructure for Provable Games and
+Applications</h1>
+<p>[## Play with</p>
+<p>Providing seamless player onboarding with self-custodial embedded
+wallets with Passkeys, Session Tokens, Paymaster and more. Start playing
+games in seconds!](/controller/overview)[## Scale with</p>
+<p>Horizontally scalable execution sharding for ephemeral and persistent
+rollups. Providing low latency execution contexts with fixed
+costs.](/slot/getting-started)[## Discover with</p>
+<p>Bring all your favorite onchain games together in one central hub
+where players and developers connect.](/arcade/overview)</p>
+<hr />
+<h2>Arcade Overview – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/arcade/overview</p>
+<h3>TL;DR: Arcade is:</h3>
+<ul>
+<li>A unified hub for all your favorite onchain games</li>
+<li>A frictionless bridge between developers and players</li>
+<li>A permissionless platform for game registration and publishing</li>
+<li>Designed to enhance discoverability, engagement, and player
+experience</li>
+<li>Leverage NFTs for ownership and control of your games and
+editions</li>
+</ul>
+<h2>Key Features</h2>
+<h3>🎮 Register a Game</h3>
+<p>Game studios can register a game freely, without needing permission.
+When creating a game for the first time, you’ll be asked to provide its
+metadata and define at least one Game Edition.</p>
+<p>When you register a game or an edition, an NFT representing its
+ownership is minted. This NFT grants you admin rights over the game or
+edition. You can update the metadata of your game or any edition at any
+time — including name, description, icon, image gallery, video, and
+more.</p>
+<h3>🚀 Publish a Game</h3>
+<p>Once your game is registered, you can publish it to request a review.
+After approval, the game will be whitelisted and made publicly visible
+to all users on the platform.</p>
+<h3>🧩 Create and update Game Editions</h3>
+<p>You can create new editions of your game at any time — each edition
+gets its own ownership NFT. As the game owner, you control which
+editions are visible or hidden. As the edition owner, you can choose to
+publish or hide your edition from public view.</p>
+<h3>🚀 Publish and whitelist an Edition</h3>
+<p>As the edition owner you have the ability to publish your edition
+once created. Once published, the game owner has the ability to
+whitelist you Edition to make it public.</p>
+<hr />
+<h2>Arcade Setup – Cartridge Documentation</h2>
+<p><strong>Source:</strong> https://docs.cartridge.gg/arcade/setup</p>
+<h2>Torii Configuration</h2>
+<p>To provide a rich user experience in Arcade, we recommend enhancing
+your Torii configuration to enable live activity feeds, asset indexing,
+and leaderboards.</p>
+<h3>⚡️ Activity Feed</h3>
+<p>Display live player activity on your Arcade edition page.</p>
+<p><code>[indexing] transactions = true</code></p>
+<h3>💄 Player Asset Indexing</h3>
+<p>Index and display custom in-game assets tied to your players.</p>
+<p><code>[indexing] contracts = [     "ERC20:0x1234...5678",     "ERC721:0x1234...5678", ]</code></p>
+<h3>✨ Leaderboard Integration</h3>
+<p>Enable live leaderboards based on progression events or achievements
+(if implemented).</p>
+<p><code>[sql] historical = ["&lt;YOUR-NAMESPACE&gt;-TrophyProgression"]</code></p>
+<p>Only add TrophyProgression if your game emits progression events
+through achievements.</p>
+<hr />
+<h2>Achievements – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/achievements</p>
+<p>The Cartridge Achievements is a system for games to reward players
+for completing achievements.</p>
+<h2>Key Features</h2>
+<ul>
+<li><strong>Packages</strong>: Games can define achievements thanks to
+the provided packages.</li>
+<li><strong>Rewards</strong>: Games can reward players with Cartridge
+points for completing achievements.</li>
+<li><strong>Profile</strong>: Players can view their achievements and
+scores whitout leaving the game.</li>
+</ul>
+<h2>Benefits for Game Developers</h2>
+<ul>
+<li><strong>Simplicity</strong>: Easy integration with existing Starknet
+smart contracts and Dojo.</li>
+<li><strong>Cost-effectiveness</strong>: Achievements are events based,
+no additional storage is required.</li>
+<li><strong>Performance</strong> (coming soon): Plugin attached to Torii
+to improve the performances of the achievements computation.</li>
+</ul>
+<h2>How It Works?</h2>
+<p>For detailed implementation and usage, refer to the <a
+href="https://github.com/cartridge-gg/arcade">GitHub repository</a>.</p>
+<h3>Creation</h3>
+<p>The game world describes the achievements and the corresponding tasks
+to unlock them. Each achievement is defined by (not exhaustive) a unique
+<code>identifier</code>, a <code>title</code>, a
+<code>description</code> and a set of <code>tasks</code>. Each task is
+defined by an <code>identifier</code>, a <code>total</code> and a
+<code>description</code>. The completion of a task is done when enough
+progression has been made by a player regarding a specific task. The
+achievement is completed when all included tasks are completed.</p>
+<h3>Progression</h3>
+<p>The progression of each individual task is done by the game by
+emitting events associated to a <code>task</code> and a
+<code>player</code>. Each progression provides a <code>counter</code> to
+add to the player progression. A task completion is the sum of all the
+progression events emitted for a specific <code>task</code> (defined by
+the <code>identifier</code>).</p>
+<h3>Integration</h3>
+<p>The status of the achievement is computed off-chain by the
+controller, it starts when the controller is initialized on the
+client.</p>
+<hr />
+<h2>Controller Configuration – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/configuration</p>
+<p>Controller provides several configuration options related to chains,
+sessions, and theming.</p>
+<h2>ControllerOptions</h2>
+<p>``` export type Chain = { rpcUrl: string; };</p>
+<p>export type ControllerOptions = { // Chain configuration chains?:
+Chain[]; // Custom RPC endpoints (takes precedence over default chains)
+defaultChainId?: string; // Default chain to use (hex encoded). If using
+Starknet React, this gets overridden by the same param in
+StarknetConfig</p>
+<pre><code>// Session options 
+policies?: SessionPolicies;  // Optional: Session policies for pre-approved transactions
+propagateSessionErrors?: boolean;  // Propagate transaction errors back to caller
+
+// Customization options
+preset?: string;  // Preset name for custom themes and verified policies
+slot?: string;  // Slot project name for custom indexing</code></pre>
+<p>}; ```</p>
+<h2>Chain Configuration</h2>
+<p>Controller provides default Cartridge RPC endpoints for Starknet
+mainnet and sepolia networks:</p>
+<ul>
+<li><code>https://api.cartridge.gg/x/starknet/mainnet</code></li>
+<li><code>https://api.cartridge.gg/x/starknet/sepolia</code></li>
+</ul>
+<p>When you provide custom chains via the <code>chains</code> option,
+they take precedence over the default Cartridge chains if they specify
+the same network. This allows you to:</p>
+<ul>
+<li>Use custom RPC endpoints for mainnet or sepolia</li>
+<li>Add support for additional networks (like Slot katana
+instances)</li>
+<li>Override default chain configurations</li>
+</ul>
+<p><strong>Example:</strong></p>
+<p><code>const controller = new Controller({   chains: [     { rpcUrl: "https://api.cartridge.gg/x/my-game/sepolia" }, // Overrides default sepolia     { rpcUrl: "http://localhost:5050" }, // Adds local development chain   ],   chainId: constants.StarknetChainId.SN_SEPOLIA, });</code></p>
+<h2>Configuration Categories</h2>
+<p>The configuration options are organized into several categories:</p>
+<ul>
+<li><strong>Chain Options</strong>: Core network configuration and chain
+settings</li>
+<li><a href="/controller/sessions"><strong>Session Options</strong></a>:
+Session policies and transaction-related settings</li>
+<li><strong>Customization Options</strong>: <a
+href="/controller/presets">Presets</a> for themes and verified policies,
+<a href="/controller/inventory">Slot</a> for custom indexing</li>
+</ul>
+<h2>When to Use Policies</h2>
+<p><strong>Policies are optional</strong> in Cartridge Controller.
+Choose based on your application's needs:</p>
+<h3>Use Policies When:</h3>
+<ul>
+<li>Building games that need frequent, seamless transactions</li>
+<li>You want gasless transactions via Cartridge Paymaster</li>
+<li>Users should not be interrupted with approval prompts during
+gameplay</li>
+<li>You need session-based authorization for better UX</li>
+</ul>
+<h3>Skip Policies When:</h3>
+<ul>
+<li>Building simple applications with occasional transactions</li>
+<li>Manual approval for each transaction is acceptable</li>
+<li>You don't need gasless transaction capabilities</li>
+<li>You want minimal setup complexity</li>
+</ul>
+<p>``` // Without policies - simple setup, manual approvals const
+simpleController = new Controller();</p>
+<p>// With policies - session-based, gasless transactions const
+sessionController = new Controller({ policies: { // ... policy
+definitions } }); ```</p>
+<hr />
+<h2>Controller Getting Started – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/getting-started</p>
+<p>Controller implements a standard StarkNet account interface and can
+be seamlessly integrated into your application like any other
+wallet.</p>
+<h2>Quick Start</h2>
+<p>The fastest way to get started is to install the controller package
+and connect to Cartridge:</p>
+<p>``` import Controller from "@cartridge/controller";</p>
+<p>const controller = new Controller({}); const account = await
+controller.connect();</p>
+<p>// You're ready to execute transactions! ```</p>
+<h2>Installation</h2>
+<p>npmpnpmyarnbun</p>
+<p>npm</p>
+<p><code>npm install @cartridge/controller starknet</code></p>
+<h2>Basic Usage</h2>
+<p>Here's a simple example of how to initialize and use the
+controller:</p>
+<p>``` import Controller from "@cartridge/controller";</p>
+<p>// Initialize the controller without policies // This requires manual
+approval for each transaction const controller = new Controller();</p>
+<p>// Connect to get an account instance const account = await
+controller.connect();</p>
+<p>// Execute transactions - user will see approval dialog const tx =
+await account.execute([ { contractAddress: "0x...", entrypoint:
+"my_function", calldata: ["0x1", "0x2"], }]); ```</p>
+<blockquote>
+<p><strong>Note:</strong> When no policies are provided, each
+transaction requires manual user approval through the Cartridge
+interface. This is suitable for simple applications or testing, but
+games typically benefit from using <a
+href="/controller/getting-started#configuration-with-session-policies">session
+policies</a> for a smoother experience.</p>
+</blockquote>
+<h2>Configuration with Session Policies</h2>
+<p>For games that need gasless transactions and session management:</p>
+<p>``` import Controller from "@cartridge/controller";</p>
+<p>const controller = new Controller({ policies: { contracts: { // Your
+game contract "0x1234...": { name: "My Game Contract", methods: [ {
+name: "move<em>player", entrypoint: "move</em>player", description:
+"Move player character", }, { name: "attack", entrypoint: "attack",
+description: "Attack enemy", }, ], }, }, }, }); ```</p>
+<h2>Usage with Starknet React</h2>
+<p>``` import React from "react"; import { sepolia, mainnet } from
+"@starknet-react/chains"; import { StarknetConfig, jsonRpcProvider,
+starkscan, } from "@starknet-react/core"; import ControllerConnector
+from "@cartridge/connector/controller";</p>
+<p>// Create the connector outside the component to avoid recreation on
+renders const connector = new ControllerConnector();</p>
+<p>// Configure the JSON RPC provider const provider = jsonRpcProvider({
+rpc: (chain) =&gt; { switch (chain) { case mainnet: return { nodeUrl:
+"https://api.cartridge.gg/x/starknet/mainnet" }; case sepolia: default:
+return { nodeUrl: "https://api.cartridge.gg/x/starknet/sepolia" }; } },
+});</p>
+<p>export function StarknetProvider({ children }: { children:
+React.ReactNode }) { return ( &lt;StarknetConfig
+defaultChainId={sepolia.id} chains={[mainnet, sepolia]}
+provider={provider} connectors={[connector]} explorer={starkscan} &gt;
+{children} </StarknetConfig> ); } ```</p>
+<h2>Examples</h2>
+<p>For more detailed examples of how to use Cartridge Controller in
+different environments, check out our integration guides:</p>
+<ol>
+<li><p><a href="/controller/examples/react">React</a></p>
+<ul>
+<li>Integration with <code>starknet-react</code></li>
+<li>Hooks and components</li>
+<li>State management</li>
+</ul></li>
+<li><p><a href="/controller/examples/svelte">Svelte</a></p>
+<ul>
+<li>Svelte stores and reactivity</li>
+<li>Component lifecycle</li>
+<li>Event handling</li>
+</ul></li>
+<li><p><a href="/controller/examples/rust">Rust</a></p>
+<ul>
+<li>Native integration</li>
+<li>Error handling</li>
+<li>Async operations</li>
+</ul></li>
+</ol>
+<p>Each guide provides comprehensive examples and best practices for
+integrating Cartridge Controller in your preferred environment.</p>
+<h2>Next Steps</h2>
+<ul>
+<li>Learn about <a href="/controller/sessions">Session Keys</a></li>
+<li>Set up <a href="/controller/signer-management">Multiple Signers</a>
+for backup authentication</li>
+<li>Customize your <a href="/controller/presets">Controller</a></li>
+<li>Set up <a href="/controller/usernames">Usernames</a></li>
+<li>Configure <a href="/controller/configuration">Paymaster</a></li>
+</ul>
+<hr />
+<h2>Controller Inventory Management – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/inventory</p>
+<p>Cartridge Controller provides Inventory modal to manage account
+assets (<code>ERC-20</code>, <code>ERC-721</code>).</p>
+<h2>Configure tokens</h2>
+<p>By default, commonly used tokens are indexed and automatically shown.
+Full list of default tokens are listed in <a
+href="https://github.com/cartridge-gg/controller/blob/main/packages/torii-config/public-tokens/mainnet.toml"><code>torii-config/public-tokens/mainnet.tom</code></a>.
+This list can be extended by configuring Torii hosted on Slot.</p>
+<h3>Configure additional token to index</h3>
+<p>```</p>
+<h1>torii-config.toml</h1>
+<p>[indexing] contracts = [ "erc20:<contract-address>",
+"erc721:<contract-address>"] ```</p>
+<h3>Create or update Torii instance on Slot</h3>
+<p><code>slot d create &lt;project&gt; torii --config &lt;path/to/torii-config.toml&gt;</code></p>
+<h3>Configure Controller</h3>
+<p>Provide Slot project name to <code>ControllerOptions</code>.</p>
+<p>``` const controller = new Controller({ slot: "<project>" });</p>
+<p>// or via connector const connector = new CartridgeConnector({ slot:
+"<project>" }) ```</p>
+<h3>Open Inventory modal</h3>
+<p><code>controller.openProfile("inventory");</code></p>
+<hr />
+<h2>Controller Overview – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/overview</p>
+<h3>TL;DR: Cartridge Controller is:</h3>
+<ul>
+<li>A gaming-focused smart contract wallet for Starknet</li>
+<li>Makes Web3 gaming accessible and fun via Session Keys and gasless
+transactions</li>
+<li>Handles seamless player onboarding with Passkey authentication</li>
+<li>Provides identity, achievements, and customization features for
+games</li>
+<li>Compatible with popular frameworks like Starknet React and can be
+integrated across platforms</li>
+</ul>
+<h2>Key Features</h2>
+<h3>Simple &amp; Secure</h3>
+<ul>
+<li>Passwordless authentication using Passkeys for one-click
+onboarding</li>
+<li>Multi-signer support with Passkeys, social login (Google, Discord),
+and external wallets (MetaMask, Rabby, WalletConnect)</li>
+<li>Self-custodial embedded wallets that put players in control</li>
+<li>Built-in security features to protect player assets</li>
+</ul>
+<h3>Designed for Fun</h3>
+<ul>
+<li>Session keys eliminate transaction popups during gameplay</li>
+<li>Secure transaction delegation lets games submit actions on behalf of
+players</li>
+<li>Free transactions through the Cartridge Paymaster so players focus
+on playing</li>
+</ul>
+<h3>Customizable</h3>
+<ul>
+<li>Flexible architecture adapts to your game's specific
+requirements</li>
+<li>Full theme customization to match your game's branding</li>
+<li>Dynamic UI components for displaying game assets, quests and
+achievements</li>
+<li>Extensible plugin system for adding custom functionality</li>
+</ul>
+<h3>Identity and Reputation</h3>
+<ul>
+<li>Universal player identity that works across all Cartridge-enabled
+games</li>
+<li>Built-in achievement system for tracking player accomplishments</li>
+<li>Reputation system that grows as players engage with games</li>
+<li>Social features to connect players and build communities</li>
+</ul>
+<hr />
+<h2>Controller Passkey Support – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/passkey-support</p>
+<h2>Credential Security</h2>
+<p>Controller leverages Passkeys to securely provision credentials for
+signing blockchain transactions. Passkeys can be generated by:</p>
+<ul>
+<li>Platform authenticators (Face ID, Touch ID)</li>
+<li>Password managers (Bitwarden, 1Password)</li>
+</ul>
+<h2>Platform Support</h2>
+<p>Passkeys are <a
+href="https://www.passkeys.io/compatible-devices">generally well
+supported</a> across modern platforms. You can use them with:</p>
+<ul>
+<li>Device authenticators directly</li>
+<li>Mobile device pairing via QR code flow</li>
+</ul>
+<p>If you device does not natively support them, there are several
+password managers that support Passkey creation and management:</p>
+<ul>
+<li><a href="https://bitwarden.com/help/storing-passkeys/">Bitwarden
+(free)</a></li>
+<li><a href="https://1password.com/">1Password</a></li>
+<li><a href="https://www.dashlane.com/">Dashlane</a></li>
+</ul>
+<p>When using a password manager, be sure to install the browser
+extension as well.</p>
+<h2>Backup Solutions</h2>
+<p>Passkey backup is handled differently depending on your platform or
+password manager:</p>
+<h4>Apple Devices</h4>
+<p>Passkeys are backed up with your keychain in iCloud. <a
+href="https://support.apple.com/en-us/102195">Learn more</a></p>
+<h4>Android Devices</h4>
+<p>Passkeys are backed up with your Google account. <a
+href="https://support.google.com/chrome/answer/13168025">Learn
+more</a></p>
+<h4>Windows Devices</h4>
+<p>Passkeys can be created and managed as part of your Windows account.
+<a
+href="https://learn.microsoft.com/en-us/windows/security/identity-protection/passkeys">Learn
+more</a></p>
+<h2>Multi-Signer Support</h2>
+<p>Passkeys can be used as part of Controller's multi-signer
+functionality, allowing you to add multiple authentication methods to
+your account. This provides backup access and additional security
+options.</p>
+<p>Learn more about adding and managing multiple signers in the <a
+href="/controller/signer-management">Signer Management</a> guide.</p>
+<hr />
+<h2>Controller Presets – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/presets</p>
+<p>This guide provides a comprehensive overview of how to create and
+apply custom themes, provide verified session policies, and configure
+Apple App Site Association for iOS integration with the Cartridge
+Controller.</p>
+<h2>Creating a Theme</h2>
+<p>To create a theme, teams should commit their theme config to the
+<code>configs</code> folder in <a
+href="https://github.com/cartridge-gg/presets/tree/main/configs"><code>@cartridge/presets</code></a>
+with the icon and banner included.</p>
+<p><code>{   "origin": "https://flippyflop.gg",   "theme": {     "colors": {       "primary": "#F38332"     },     "cover": "cover.png",     "icon": "icon.png",     "name": "FlippyFlop"   } }</code></p>
+<p>See an example pull request <a
+href="https://github.com/cartridge-gg/presets/pull/8/files"><code>here</code></a></p>
+<h2>Verified Sessions</h2>
+<p>Session Policies can be provided in the preset configuration,
+providing a smoother experience for your users. In order to submit
+verified policies, create a commit with them to your applications
+<code>config.json</code> in <a
+href="https://github.com/cartridge-gg/presets/tree/main/configs"><code>@cartridge/presets</code></a>.</p>
+<p>For an example, see <a
+href="https://github.com/cartridge-gg/presets/blob/main/configs/dope-wars/config.json">dope-wars</a>:</p>
+<p><code>{   "origin": "dopewars.game",   "chains": {     "SN_MAIN": {       "policies": {         "contracts": {           "0x051Fea4450Da9D6aeE758BDEbA88B2f665bCbf549D2C61421AA724E9AC0Ced8F": {             "name": "VRF Provider",             "description": "Provides verifiable random functions",             "methods": [               {                 "name": "Request Random",                 "description": "Request a random number",                 "entrypoint": "request_random"               }             ]           }         }       }     }   }, }</code></p>
+<h2>Apple App Site Association</h2>
+<p>The <a
+href="https://developer.apple.com/documentation/xcode/supporting-associated-domains">Apple
+App Site Association (AASA)</a> configuration enables iOS app
+integration with Cartridge Controller, allowing for usage of Web
+Credentials (Passkeys) in native applications.</p>
+<h3>Configuration</h3>
+<p>To add your iOS app to the AASA file, include the
+<code>apple-app-site-association</code> section in your game's
+<code>config.json</code>:</p>
+<h4>JSON Configuration</h4>
+<p><code>{   "apple-app-site-association": {     "webcredentials": {       "apps": ["ABCDE12345.com.example.yourgame"]     }   }, }</code></p>
+<hr />
+<h2>Sessions and Policies – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/sessions</p>
+<p>Cartridge Controller supports session-based authorization and
+policy-based transaction approvals. When policies are pre-approved by
+the user, games can execute transactions seamlessly without requesting
+approval for each interaction, creating a smooth gaming experience.</p>
+<h2>How Sessions Work</h2>
+<ol>
+<li><strong>Policy Definition</strong>: Games define which contract
+methods they need to call</li>
+<li><strong>User Approval</strong>: Users approve these policies once
+during initial connection</li>
+<li><strong>Session Creation</strong>: Controller creates a session with
+approved transaction permissions</li>
+<li><strong>Gasless Execution</strong>: Games can execute approved
+transactions without user prompts</li>
+<li><strong>Paymaster Integration</strong>: Transactions can be
+sponsored through Cartridge Paymaster</li>
+</ol>
+<h2>Transactions Without Policies</h2>
+<p>Cartridge Controller can execute transactions
+<strong>without</strong> defining policies. When no policies are
+provided:</p>
+<ul>
+<li>Each transaction requires manual user approval via the Cartridge
+interface</li>
+<li>Users will see a confirmation screen for every transaction</li>
+<li>No gasless transactions or paymaster integration</li>
+<li>Suitable for simple applications that don't need session-based
+authorization</li>
+</ul>
+<p>``` // Controller without policies - requires manual approval for
+each transaction const controller = new Controller(); const account =
+await controller.connect();</p>
+<p>// This will prompt the user for approval const tx = await
+account.execute([ { contractAddress: "0x123...", entrypoint: "transfer",
+calldata: ["0x456...", "100"], }]); ```</p>
+<h2>Sessions vs. Manual Approval</h2>
+<p>| Feature | With Policies (Sessions) | Without Policies (Manual) | |
+--- | --- | --- | | Transaction Approval | Pre-approved via policies |
+Manual approval each time | | User Experience | Seamless gameplay |
+Confirmation prompts | | Gasless Transactions | Yes (via Paymaster) | No
+| | Setup Complexity | Higher (policy definition) | Lower (basic setup)
+| | Best For | Games, frequent transactions | Simple apps, occasional
+transactions |</p>
+<h2>Session Options</h2>
+<p><code>export type SessionOptions = {   rpc: string;                // RPC endpoint URL   chainId: string;            // Chain ID for the session   policies: SessionPolicies;  // Approved transaction policies   redirectUrl: string;        // URL to redirect after registration };</code></p>
+<h2>Defining Policies</h2>
+<p>Policies allow your application to define permissions that can be
+pre-approved by the user:</p>
+<p>``` type SessionPolicies = { contracts: { [address: string]:
+ContractPolicy; // Contract interaction policies }; messages?:
+TypedDataMessage[]; // Optional signed message policies };</p>
+<p>type ContractPolicy = { name?: string; // Human-readable name of the
+contract description?: string; // Description of the contract methods:
+Method[]; // Allowed contract methods };</p>
+<p>type ContractMethod = { name: string; // Method name entrypoint:
+string; // Contract method entrypoint description?: string; // Optional
+method description };</p>
+<p>type SignMessagePolicy = TypedDataPolicy &amp; { name?: string; //
+Human-readable name of the policy description?: string; // Description
+of the policy };</p>
+<p>type TypedDataPolicy = { types: Record&lt;string, StarknetType[]&gt;;
+primaryType: string; domain: StarknetDomain; }; ```</p>
+<h2>Usage Examples</h2>
+<h3>Contract Interaction Policies Example</h3>
+<p>``` const policies: SessionPolicies = { contracts: {
+"0x4ed3a7c5f53c6e96186eaf1b670bd2e2a3699c08e070aedf4e5fc6ac246ddc1": {
+name: "Pillage", description: "Allows you to raid a structure and
+pillage resources", methods: [ { name: "Battle Pillage", description:
+"Pillage a structure", entrypoint: "battle_pillage" } ] },
+"0x2620f65aa2fd72d705306ada1ee7410023a3df03da9291f1ccb744fabfebc0": {
+name: "Battle contract", description: "Required to engage in battles",
+methods: [ { name: "Battle Start", description: "Start a battle",
+entrypoint: "battle<em>start" }, { name: "Battle Join", description:
+"Join a battle", entrypoint: "battle</em>join" }, { name: "Battle
+Leave", description: "Leave a battle", entrypoint: "battle_leave" }, ]
+}, // Include other contracts as needed } };</p>
+<p>// Using the controller directly const controller = new Controller({
+policies, // other options });</p>
+<p>// Using starknet-react connector const connector = new
+CartridgeConnector({ policies, // other options }); ```</p>
+<h3>Signed Message Policy Example</h3>
+<p>Signed Message policies allow the application to sign a typed message
+without manual approval from the user.</p>
+<p><code>const policies: SessionPolicies = {   messages: [     {       name: "Eternum Message Signing",       description: "Allows signing messages for Eternum",       types: {         StarknetDomain: [           { name: "name", type: "shortstring" },           { name: "version", type: "shortstring" },           { name: "chainId", type: "shortstring" },           { name: "revision", type: "shortstring" }         ],         "s0_eternum-Message": [           { name: "identity", type: "ContractAddress" },           { name: "channel", type: "shortstring" },           { name: "content", type: "string" },           { name: "timestamp", type: "felt" },           { name: "salt", type: "felt" }         ]       },       primaryType: "s0_eternum-Message",       domain: {         name: "Eternum",         version: "1",         chainId: "SN_MAIN",         revision: "1"       }     }   ] };</code></p>
+<h3>Verified Sessions</h3>
+<p>Verified session policies provide a better user experience by
+attesting to the validity of a games session policy configuration,
+providing confidence to it's players.</p>
+<p>Verified configs can be committed to the <code>configs</code> folder
+in <a
+href="https://github.com/cartridge-gg/presets/tree/main/configs"><code>@cartridge/presets</code></a>.</p>
+<p>Before they are merged, the team will need to collaborate with
+Cartridge to verify the policies.</p>
+<hr />
+<h2>Signer Management – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/signer-management</p>
+<p>Cartridge Controller supports <strong>multi-signer</strong>
+functionality, allowing you to add multiple authentication methods to
+your account for enhanced security and convenience. This feature enables
+you to sign in using different methods while maintaining access to the
+same Controller account and assets.</p>
+<h2>Overview</h2>
+<p>Multi-signer support provides several benefits:</p>
+<ul>
+<li><strong>Backup Authentication</strong>: Add multiple ways to access
+your account in case you lose access to your primary authentication
+method</li>
+<li><strong>Convenience</strong>: Use different authentication methods
+depending on your device or context</li>
+<li><strong>Security</strong>: Distribute access across multiple secure
+authentication methods</li>
+<li><strong>Flexibility</strong>: Choose the authentication method that
+works best for each situation</li>
+</ul>
+<h2>Supported Signer Types</h2>
+<p>Controller supports three types of signers:</p>
+<h3>1. Passkey (WebAuthn)</h3>
+<ul>
+<li><strong>Biometric authentication</strong> using Face ID, Touch ID,
+or hardware security keys</li>
+<li><strong>Platform-native</strong> security with device-based
+credential storage</li>
+<li><strong>Cross-platform</strong> compatibility with password managers
+like Bitwarden, 1Password</li>
+<li>See <a href="/controller/passkey-support">Passkey Support</a> for
+detailed setup information</li>
+</ul>
+<h3>2. Social Login</h3>
+<h4>Google Login</h4>
+<ul>
+<li><strong>Social authentication</strong> using your Google
+account</li>
+<li><strong>Familiar experience</strong> for users with existing Google
+accounts</li>
+<li><strong>Secure integration</strong> via Turnkey wallet
+infrastructure</li>
+<li>Requires existing Google account</li>
+</ul>
+<h4>Discord Login</h4>
+<ul>
+<li><strong>Social authentication</strong> using your Discord
+account</li>
+<li><strong>Streamlined onboarding</strong> for users already active in
+gaming communities</li>
+<li><strong>Secure integration</strong> via Turnkey wallet
+infrastructure</li>
+<li>Requires existing Discord account</li>
+</ul>
+<h3>3. External Wallets</h3>
+<ul>
+<li><strong>MetaMask</strong>: Popular browser extension wallet</li>
+<li><strong>Rabby</strong>: Security-focused multi-chain wallet</li>
+<li><strong>WalletConnect</strong>: Protocol supporting 100+ wallets via
+QR code or deep linking</li>
+<li>Leverages existing wallet setup and seed phrases</li>
+</ul>
+<h2>Adding Signers</h2>
+<h3>Accessing Signer Management</h3>
+<blockquote>
+<p><strong>Important</strong>: The "Add Signer" functionality is
+currently disabled while under development. This feature will be
+re-enabled in a future update.</p>
+</blockquote>
+<ol>
+<li>Connect to your Controller account using any existing authentication
+method</li>
+<li>Open the <strong>Settings</strong> panel within the Controller
+interface</li>
+<li>Navigate to the <strong>Signer(s)</strong> section</li>
+<li>~~Click <strong>Add Signer</strong> to begin adding a new
+authentication method~~ (Currently disabled)</li>
+</ol>
+<blockquote>
+<p><strong>Note</strong>: When re-enabled, signer management will be
+available on <strong>Mainnet only</strong>. The "Add Signer" button will
+be disabled on testnet environments.</p>
+</blockquote>
+<h3>Adding a Passkey</h3>
+<blockquote>
+<p><strong>Currently Disabled</strong>: This functionality is
+temporarily unavailable while under development.</p>
+</blockquote>
+<p>~~1. In the Add Signer interface, select <strong>Passkey</strong>~~
+~~2. Your browser will prompt you to create a new Passkey using:~~ ~~-
+Device biometrics (Face ID, Touch ID, Windows Hello)~~ ~~- Hardware
+security key (USB, NFC, or Bluetooth)~~ ~~- Password manager (if
+configured for Passkey storage)~~ ~~3. Follow your device's
+authentication flow~~ ~~4. Once created, the Passkey will be added to
+your account~~</p>
+<h3>Adding Social Login</h3>
+<h4>Adding Google Login</h4>
+<ol>
+<li>Select <strong>Google</strong> from the signer options</li>
+<li>You'll be redirected to Google's OAuth authorization page</li>
+<li>Sign in to your Google account if not already logged in</li>
+<li>Authorize Cartridge Controller to access your Google identity</li>
+<li>The Google login will be linked to your Controller account</li>
+</ol>
+<h4>Adding Discord Login</h4>
+<blockquote>
+<p><strong>Currently Disabled</strong>: This functionality is
+temporarily unavailable while under development.</p>
+</blockquote>
+<p>~~1. Select <strong>Discord</strong> from the signer options~~ ~~2.
+You'll be redirected to Discord's OAuth authorization page~~ ~~3. Sign
+in to your Discord account if not already logged in~~ ~~4. Authorize
+Cartridge Controller to access your Discord identity~~ ~~5. The Discord
+login will be linked to your Controller account~~</p>
+<h3>Adding External Wallets</h3>
+<blockquote>
+<p><strong>Currently Disabled</strong>: This functionality is
+temporarily unavailable while under development.</p>
+</blockquote>
+<p>~~1. Select <strong>Wallet</strong> to see external wallet options~~
+~~2. Choose from the supported wallet types:~~ ~~-
+<strong>MetaMask</strong>: Ensure MetaMask extension is installed and
+unlocked~~ ~~- <strong>Rabby</strong>: Ensure Rabby extension is
+installed and unlocked~~<br />
+~~- <strong>WalletConnect</strong>: Use QR code or deep link to connect
+mobile/desktop wallets~~ ~~3. Follow the wallet-specific connection
+flow~~ ~~4. Sign the verification message to link the wallet to your
+account~~</p>
+<h2>Managing Existing Signers</h2>
+<h3>Viewing Your Signers</h3>
+<p>The Signer(s) section displays all authentication methods associated
+with your account:</p>
+<ul>
+<li><strong>Signer type</strong> with recognizable icons (fingerprint
+for Passkey, Discord logo, wallet icons)</li>
+<li><strong>Current status</strong> indicating which signer you're
+currently using</li>
+<li><strong>Identifying information</strong> such as wallet addresses
+(partially masked for privacy)</li>
+</ul>
+<h3>Signer Information Display</h3>
+<p>Each signer card shows:</p>
+<ul>
+<li><strong>Type</strong>: Passkey, Google, Discord, MetaMask, Rabby, or
+WalletConnect</li>
+<li><strong>Status</strong>: "(current)" label for the active
+authentication method</li>
+<li><strong>Identifier</strong>: Shortened wallet address for external
+wallets, or authentication type for others</li>
+</ul>
+<h3>Switching Between Signers</h3>
+<p>When connecting to your Controller:</p>
+<ul>
+<li>The connection interface will show all available authentication
+methods</li>
+<li>Select any of your registered signers to authenticate</li>
+<li>Your account and assets remain the same regardless of which signer
+you use</li>
+</ul>
+<h2>Security Considerations</h2>
+<h3>Best Practices</h3>
+<ul>
+<li><strong>Multiple Backups</strong>: Add at least 2-3 different signer
+types to ensure account recovery</li>
+<li><strong>Secure Storage</strong>: For Passkeys, ensure your device
+backup (iCloud, Google) is secure</li>
+<li><strong>External Wallet Security</strong>: Keep your wallet seed
+phrases secure and never share them</li>
+<li><strong>Regular Access</strong>: Periodically test each
+authentication method to ensure they work</li>
+</ul>
+<h3>Account Recovery</h3>
+<p>If you lose access to your primary authentication method:</p>
+<ol>
+<li>Use any other registered signer to access your account</li>
+<li>Consider adding additional backup authentication methods</li>
+<li>Remove compromised signers if necessary (feature coming soon)</li>
+</ol>
+<h3>Current Limitations</h3>
+<ul>
+<li><strong>Deletion</strong>: Signer removal functionality is planned
+but not yet available</li>
+<li><strong>Mainnet Only</strong>: Signer management is currently
+restricted to Mainnet</li>
+<li><strong>No Hierarchy</strong>: All signers have equal access;
+there's no primary/secondary distinction</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>Common Issues</h3>
+<p><strong>"Must be on Mainnet" message</strong></p>
+<ul>
+<li>Signer management is only available on Mainnet</li>
+<li>Switch to Mainnet network to add or manage signers</li>
+</ul>
+<p><strong>Passkey creation fails</strong></p>
+<ul>
+<li>Ensure your device supports WebAuthn/FIDO2</li>
+<li>Try using a password manager with Passkey support</li>
+<li>Check that your browser is up to date</li>
+</ul>
+<p><strong>External wallet connection fails</strong></p>
+<ul>
+<li>Verify the wallet extension is installed and unlocked</li>
+<li>Ensure you're on a supported network</li>
+<li>Check that the wallet isn't connected to another dApp</li>
+</ul>
+<p><strong>Google login issues</strong></p>
+<ul>
+<li>Verify you're logged into Google in the same browser</li>
+<li>Check that third-party cookies are enabled</li>
+<li>Try clearing browser cache and cookies</li>
+</ul>
+<p><strong>Discord login issues</strong></p>
+<ul>
+<li>Verify you're logged into Discord in the same browser</li>
+<li>Check that third-party cookies are enabled</li>
+<li>Try clearing browser cache and cookies</li>
+</ul>
+<h3>Getting Help</h3>
+<p>If you encounter issues with signer management:</p>
+<ul>
+<li>Check the <a href="/controller/passkey-support">Passkey Support</a>
+guide for WebAuthn-specific help</li>
+<li>Verify your wallet setup in the respective wallet's
+documentation</li>
+<li>Ensure you're using a supported browser and have the latest wallet
+extensions installed</li>
+</ul>
+<h2>Next Steps</h2>
+<ul>
+<li>Learn about <a href="/controller/sessions">Session Keys</a> for
+gasless gaming transactions</li>
+<li>Explore <a href="/controller/configuration">Controller
+Configuration</a> options</li>
+<li>Set up <a href="/controller/usernames">Usernames</a> for your
+account</li>
+</ul>
+<hr />
+<h2>Username Lookup – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/usernames</p>
+<p>A service for looking up usernames and addresses in the Cartridge
+ecosystem. You can use either the helper methods from the SDK or query
+the endpoint directly.</p>
+<h2>Direct API Access</h2>
+<p>The lookup endpoint can be accessed directly via HTTP POST:</p>
+<p><code>curl -X POST \   -H "Content-Type: application/json" \   -d '{"usernames": ["shinobi","sensei"]}' \   https://api.cartridge.gg/accounts/lookup</code></p>
+<p>Request Format</p>
+<p><code>{   usernames?: string[];  // Look up addresses for usernames   addresses?: string[];  // Look up usernames for addresses }</code></p>
+<p>Response Format</p>
+<p><code>{   "results": [     {       "username": "shinobi",       "addresses": ["0x123..."]  // Array of addresses - future support for multiple controllers/signers     },     {       "username": "sensei",       "addresses": ["0x456..."]     }   ] }</code></p>
+<blockquote>
+<p><strong>Note</strong>: The API response includes an array of
+addresses per username to support multiple controllers/signers in the
+future. Currently, the helper methods assume a 1:1 relationship and use
+only the first address.</p>
+</blockquote>
+<h2>Helper Methods</h2>
+<p>For convenience, you can also use the helper methods which include
+caching:</p>
+<p><code>npm install @cartridge/controller</code></p>
+<p>``` import { lookupUsernames, lookupAddresses } from
+'@cartridge/controller';</p>
+<p>// Look up addresses for usernames const userMap = await
+lookupUsernames(['shinobi']); console.log(userMap.get('shinobi')); //
+Returns address: '0x123...'</p>
+<p>// Look up usernames for addresses const addressMap = await
+lookupAddresses(['0x123...']); console.log(addressMap.get('0x123...'));
+// Returns username: 'shinobi' ```</p>
+<h3><code>lookupUsernames(usernames: string[]): Promise&lt;Map&lt;string, string&gt;&gt;</code></h3>
+<ul>
+<li>Fetches addresses for given usernames.</li>
+<li>Input: Array of usernames</li>
+<li>Returns: Map of username to address</li>
+<li>Caching: Results are automatically cached</li>
+</ul>
+<h3><code>lookupAddresses(addresses: string[]): Promise&lt;Map&lt;string, string&gt;&gt;</code></h3>
+<ul>
+<li>Fetches usernames for given addresses.</li>
+<li>Input: Array of addresses</li>
+<li>Returns: Map of address to username</li>
+<li>Caching: Results are automatically cached</li>
+</ul>
+<h2>Limitations and Rate Limiting</h2>
+<p>When using the lookup methods or directly via the API, be aware of
+the following limitations and rate limiting measures:</p>
+<ol>
+<li><p><strong>Maximum Items</strong>: You can fetch up to 1000 items
+total in a single call, combining both addresses and usernames. For
+example:</p>
+<ul>
+<li>1000 addresses OR</li>
+<li>1000 usernames OR</li>
+<li>Any combination (e.g., 400 addresses + 600 usernames)</li>
+</ul></li>
+<li><p><strong>Rate Limiting</strong>: The API is rate-limited to 10
+requests per second to prevent overloading the server.</p></li>
+<li><p><strong>Address Format Requirements</strong>:</p>
+<ul>
+<li>Addresses must be lowercase non-zero-padded hex</li>
+<li>The helper methods handle address formatting automatically</li>
+</ul></li>
+</ol>
+<h2>Error Handling</h2>
+<p>The lookup methods may throw errors in the following cases:</p>
+<ul>
+<li>If you provide more than 1000 addresses in a single call.</li>
+<li>If you exceed the rate limit of 10 requests per second.</li>
+<li>If there are network issues or the API is unavailable.</li>
+</ul>
+<p>Always wrap your calls to lookup methods in a try-catch block to
+handle potential errors gracefully.</p>
+<h2>Performance Considerations</h2>
+<p>To optimize performance when fetching usernames:</p>
+<ol>
+<li>Batch your requests: Instead of making multiple calls for individual
+addresses, group them into a single call (up to 1000 addresses).</li>
+<li>Utilize the built-in caching of the helper methods: Previously
+fetched usernames are cached, so subsequent requests for the same
+addresses will be faster.</li>
+<li>Be mindful of the rate limit: If you need to fetch usernames for
+more than 1000 addresses, implement your own throttling mechanism to
+avoid hitting the rate limit.</li>
+</ol>
+<p>By following these guidelines, you can efficiently fetch and display
+usernames for controller addresses in your Cartridge-powered
+application.</p>
+<hr />
+<h2>Achievement Creation – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/achievements/creation</p>
+<h2>Getting Started</h2>
+<p>Emit events to define your achievements.</p>
+<p>The package provides a way to define achievements leveraging Starknet
+components.</p>
+<p>```</p>
+<h1>[dojo::contract]</h1>
+<p>pub mod Actions { use
+achievement::components::achievable::AchievableComponent; use
+achievement::types::task::{Task, TaskTrait}; component!(path:
+AchievableComponent, storage: achievable, event: AchievableEvent); impl
+AchievableInternalImpl =
+AchievableComponent::InternalImpl<ContractState>;</p>
+<pre><code>#[storage]
+struct Storage {
+    #[substorage(v0)]
+    achievable: AchievableComponent::Storage, 
+}
+
+#[event]
+#[derive(Drop, starknet::Event)]
+enum Event {
+    #[flat]
+    AchievableEvent: AchievableComponent::Event, 
+}
+  // Constructor
+
+fn dojo_init(self: @ContractState) {
+    // [Event] Emit all Achievement creation events
+    let world = self.world(&quot;&lt;YOUR-NAMESPACE&gt;&quot;);
+    let task_id = &#39;TASK_IDENTIFIER&#39;;
+    let task_target = 100;
+    let task = TaskTrait::new(task_id, task_target, &quot;Do something 100 times&quot;);
+    let tasks: Span&lt;Task&gt; = array![task].span();
+
+    self.achievable 
+        .create( 
+            world, 
+            id: &#39;ACHIEVEMENT_IDENTIFIER&#39;, 
+            hidden: false, 
+            index: 0, 
+            points: 10, 
+            start: 0, 
+            end: 0, 
+            group: &#39;Group&#39;, 
+            title: &quot;Achievement title&quot;, 
+            description: &quot;The achievement description&quot;, 
+            tasks: tasks, 
+            data: &quot;&quot;, 
+            icon: &#39;fa-trophy&#39;,
+        );
+    }
+}</code></pre>
+<p>} ```</p>
+<h2>API References</h2>
+<h3><code>AchievableComponent.create</code></h3>
+<p><code>AchievableComponent.create(     self: @ComponentState&lt;TContractState&gt;,     world: WorldStorage,     id: felt252,     hidden: bool,     index: u8,     points: u16,     start: u64,     end: u64,     group: felt252,     icon: felt252,     title: felt252,     description: ByteArray,     tasks: Span&lt;Task&gt;,     data: ByteArray, )</code></p>
+<p>See also <a
+href="https://github.com/cartridge-gg/arcade/blob/main/packages/achievement/src/components/achievable.cairo">AchievableComponent</a></p>
+<h4>Parameters</h4>
+<ul>
+<li><code>self</code>: The component state.</li>
+<li><code>world</code>: The world storage.</li>
+<li><code>id</code>: The achievement identifier, it should be
+unique.</li>
+<li><code>hidden</code>: Speicify if you want the achievement to be
+hidden in the controller UI.</li>
+<li><code>index</code>: The achievement index which is the page in which
+the achievement will be displayed within the group.</li>
+<li><code>points</code>: The achievement points to reward the
+player.</li>
+<li><code>start</code>: The achievement start timestamp, it should be
+used for ephemeral achievements, <code>0</code> for everlasting
+achievements.</li>
+<li><code>end</code>: The achievement end timestamp, it should be used
+for ephemeral achievements, <code>0</code> for everlasting
+achievements.</li>
+<li><code>group</code>: The achievement group, it should be used to
+group achievements together (see also <code>index</code> to define
+multiple pages).</li>
+<li><code>icon</code>: The achievement icon, it should be a <a
+href="https://fontawesome.com/icons">FontAwesome</a> icon name (e.g.
+<code>fa-trophy</code>).</li>
+<li><code>title</code>: The achievement title.</li>
+<li><code>description</code>: The achievement global description.</li>
+<li><code>tasks</code>: The achievement tasks (see also
+<code>Task</code> type).</li>
+<li><code>data</code>: The achievement data, not used yet but could have
+a future use.</li>
+</ul>
+<h3><code>Task</code></h3>
+<p><code>pub struct Task {     id: felt252,     total: u32,     description: ByteArray, }</code></p>
+<p>See also <a
+href="https://github.com/cartridge-gg/arcade/blob/main/packages/trophy/src/types/task.cairo">Task</a></p>
+<h4>Parameters</h4>
+<ul>
+<li><code>id</code>: The task identifier, it should be unique but used
+in several achievements.</li>
+<li><code>total</code>: The task target, once reached the achievement
+task is completed.</li>
+<li><code>description</code>: The task description.</li>
+</ul>
+<h2>Gallery</h2>
+<ul>
+<li><a
+href="https://github.com/cartridge-gg/dopewars/blob/mainnet/src/systems/ryo.cairo">DopeWars</a></li>
+</ul>
+<hr />
+<h2>Controller Achievements Integration – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/achievements/integration</p>
+<h2>Configure the controller</h2>
+<p>The controller needs to be configured with the additional
+parameters:</p>
+<ul>
+<li><code>namespace</code>: The namespace of the game.</li>
+<li><code>slot</code>: The slot name associated to the torii
+instance.</li>
+</ul>
+<p><code>new ControllerConnector({   url,   rpc,   profileUrl,   namespace: "dopewars",    slot: "ryomainnet",    theme,   colorMode,   policies, });</code></p>
+<h2>Open the achievements page</h2>
+<p>Integrate the achievements page in your game client</p>
+<p>You can add this following callback to a button to open the
+achievements page.</p>
+<p>``` const { connector } = useAccount();</p>
+<p>const handleClick = useCallback(() =&gt; { if
+(!connector?.controller) { console.error("Connector not initialized");
+return; } connector.controller.openProfile("achievements"); },
+[connector]); ```</p>
+<h2>Gallery</h2>
+<ul>
+<li><a
+href="https://github.com/cartridge-gg/dopewars/blob/mainnet/web/src/components/wallet/ConnectButton.tsx">DopeWars</a></li>
+</ul>
+<hr />
+<h2>Achievement Progression – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/achievements/progression</p>
+<h2>Getting Started</h2>
+<p>Emit events to track the progress of the player.</p>
+<p>The package provides also a way to be used as a cairo package.</p>
+<p><code>#[dojo::contract] pub mod Actions {     use achievement::store::{Store, StoreTrait};     // ...     #[abi(embed_v0)]     impl ActionsImpl of IActions&lt;ContractState&gt; {         fn play(ref self: ContractState, do: felt252) {             let world = self.world(@"&lt;YOUR-NAMESPACE&gt;")             // If the player meets the task requirement, emit an event to track the progress             if do === 'something' {                 let store = StoreTrait::new(world);                 let player_id = starknet::get_caller_address();                 let task_id = 'TASK_IDENTIFIER';                 let count = 1;                 let time = starknet::get_block_timestamp();                 store.progress(player_id.into(), task_id, count, time);             }         }     } }</code></p>
+<h2>API References</h2>
+<h3><code>AchievableComponent.progress</code></h3>
+<p><code>AchievableComponent.create(     self: @ComponentState&lt;TContractState&gt;,     world: WorldStorage,     player_id: felt252,     task_id: felt252,     count: u32, )</code></p>
+<p>See also <a
+href="https://github.com/cartridge-gg/arcade/blob/main/packages/achievement/src/components/achievable.cairo">AchievableComponent</a></p>
+<h4>Parameters</h4>
+<ul>
+<li><code>self</code>: The component state.</li>
+<li><code>world</code>: The world storage.</li>
+<li><code>player_id</code>: The player identifier.</li>
+<li><code>task_id</code>: The task identifier.</li>
+<li><code>count</code>: The progression count to add.</li>
+</ul>
+<h2>Gallery</h2>
+<ul>
+<li><a
+href="https://github.com/cartridge-gg/dopewars/blob/mainnet/src/systems/helpers/shopping.cairo">DopeWars</a></li>
+</ul>
+<hr />
+<h2>Achievement Setup – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/achievements/setup</p>
+<h2>Getting Started</h2>
+<p>Add the Cartridge package <code>achievement</code> as a dependency in
+your Scarb.toml</p>
+<p>``` [dependencies] starknet = "2.8.4" dojo = { git =
+"https://github.com/dojoengine/dojo", tag = "v1.5.1" } achievement = {
+git = "https://github.com/cartridge-gg/arcade", tag = "v1.5.1" }</p>
+<p>[[target.starknet-contract]] build-external-contracts = [
+"dojo::world::world<em>contract::world",
+"achievement::events::index::e</em>TrophyCreation",
+"achievement::events::index::e_TrophyProgression", ] ```</p>
+<h2>Torii configuration</h2>
+<p>The progression events require to be managed as historical events by
+Torii.</p>
+<p>It means that every single events will remain available in the torii
+database and accessible in the <code>event_messages_historical</code>
+table.</p>
+<p>``` rpc = <YOUR-RPC-URL> world_address = <YOUR-WORLD-ADDRESS></p>
+<p>[indexing]</p>
+<p>[sql] historical = ["<YOUR-NAMESPACE>-TrophyProgression"] ```</p>
+<h2>Gallery</h2>
+<ul>
+<li><a
+href="https://github.com/cartridge-gg/dopewars/blob/mainnet/Scarb.toml">DopeWars</a></li>
+</ul>
+<hr />
+<h2>Achievement Testing – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/achievements/testing</p>
+<p>Do not forget to add the corresponding events to your namespace
+definition while you setup your tests.</p>
+<p><code>fn namespace_def() -&gt; NamespaceDef {     NamespaceDef {         namespace: "namespace", resources: [             // ...             TestResource::Event(achievement::events::index::e_TrophyCreation::TEST_CLASS_HASH),             TestResource::Event(achievement::events::index::e_TrophyProgression::TEST_CLASS_HASH),             TestResource::Contract(Actions::TEST_CLASS_HASH),         ].span()     }; }</code></p>
+<hr />
+<h2>Controller Node.js Integration – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/examples/node</p>
+<p>This guide demonstrates how to integrate the Cartridge Controller
+with a Node.js application.</p>
+<h2>Installation</h2>
+<p>npmpnpmyarnbun</p>
+<p>npm</p>
+<p><code>npm install @cartridge/controller starknet</code></p>
+<h2>Basic Setup</h2>
+<p>``` import SessionProvider, { ControllerError, } from
+"@cartridge/controller/session/node"; import { constants } from
+"starknet"; import path from "path";</p>
+<p>export const STRK<em>CONTRACT</em>ADDRESS =
+"0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";</p>
+<p>async function main() { // Path to store session const storagePath =
+process.env.CARTRIDGE<em>STORAGE</em>PATH || path.join(process.cwd(),
+".cartridge");</p>
+<p>// Create a session provider const provider = new SessionProvider({
+rpc: "https://api.cartridge.gg/x/starknet/sepolia", chainId:
+constants.StarknetChainId.SN_SEPOLIA, policies: { contracts: {
+[STRK<em>CONTRACT</em>ADDRESS]: { methods: [ { name: "approve",
+entrypoint: "approve", description: "Approve spending of tokens", }, {
+name: "transfer", entrypoint: "transfer" }, ], }, }, }, basePath:
+storagePath, });</p>
+<p>try { // Connect and create session const account = await
+provider.connect(); console.log("Session initialized!");</p>
+<pre><code>if (account) {
+  console.log(&quot;Account address:&quot;, account.address);
+
+  // Example: Transfer STRK
+  const amount = &quot;0x0&quot;;
+  const recipient = account.address; // Replace with actual recipient address
+
+  const result = await account.execute([
+    {
+      contractAddress: STRK_CONTRACT_ADDRESS,
+      entrypoint: &quot;transfer&quot;,
+      calldata: [recipient, amount, &quot;0x0&quot;],
+    },
+  ]);
+
+  console.log(&quot;Transaction hash:&quot;, result.transaction_hash);
+} else {
+  console.log(&quot;Please complete the session creation in your browser&quot;);
+}</code></pre>
+<p>} catch (error: unknown) { const controllerError = error as
+ControllerError; if (controllerError.code) { console.error("Session
+error:", { code: controllerError.code, message: controllerError.message,
+data: controllerError.data, }); } else { console.error("Session error:",
+error); } } }</p>
+<p>main().catch(console.error); ```</p>
+<h2>Important Notes</h2>
+<ol>
+<li>The <code>basePath</code> parameter specifies where session data
+will be stored. Make sure the directory is writable.</li>
+<li>When running the application for the first time, you'll need to
+complete the session creation in your browser. The application will
+provide instructions.</li>
+<li>Session data is persisted between runs, so you don't need to create
+a new session each time.</li>
+<li>The example includes proper error handling for Controller-specific
+errors, which include additional context through the <code>code</code>
+and <code>data</code> fields.</li>
+<li>Keep your RPC endpoints and contract addresses secure, preferably in
+environment variables.</li>
+</ol>
+<hr />
+<h2>Controller React Integration – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/examples/react</p>
+<p>This guide demonstrates how to integrate the Cartridge Controller
+with a React application.</p>
+<h2>Installation</h2>
+<p>npmpnpmyarnbun</p>
+<p>npm</p>
+<p><code>npm install @cartridge/connector @cartridge/controller @starknet-react/core @starknet-react/chains starknet npm install -D tailwindcss vite-plugin-mkcert</code></p>
+<h2>Basic Setup</h2>
+<h3>1. Configure the Starknet Provider</h3>
+<p>First, set up the Starknet provider with the Cartridge Controller
+connector:</p>
+<p>You can customize the <code>ControllerConnector</code> by providing
+configuration options during instantiation. The
+<code>ControllerConnector</code> accepts an options object that allows
+you to configure various settings such as policies, RPC URLs, theme, and
+more.</p>
+<blockquote>
+<p>⚠️ <strong>Important</strong>: The <code>ControllerConnector</code>
+instance must be created outside of any React components. Creating it
+inside a component will cause the connector to be recreated on every
+render, which can lead to connection issues.</p>
+</blockquote>
+<p>``` import { sepolia, mainnet } from "@starknet-react/chains"; import
+{ StarknetConfig, jsonRpcProvider, starkscan, } from
+"@starknet-react/core"; import ControllerConnector from
+"@cartridge/connector/controller"; import { SessionPolicies } from
+"@cartridge/controller";</p>
+<p>// Define your contract addresses const ETH<em>TOKEN</em>ADDRESS =
+'0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7'</p>
+<p>// Define session policies const policies: SessionPolicies = {
+contracts: { [ETH<em>TOKEN</em>ADDRESS]: { methods: [ { name: "approve",
+entrypoint: "approve", description: "Approve spending of tokens", }, {
+name: "transfer", entrypoint: "transfer" }, ], }, }, }</p>
+<p>// Initialize the connector const connector = new
+ControllerConnector({ policies, // With the defaults, you can omit
+chains if you want to use: // - chains: [ // { rpcUrl:
+"https://api.cartridge.gg/x/starknet/sepolia" }, // { rpcUrl:
+"https://api.cartridge.gg/x/starknet/mainnet" }, // ] })</p>
+<p>// Configure RPC provider const provider = jsonRpcProvider({ rpc:
+(chain: Chain) =&gt; { switch (chain) { case mainnet: return { nodeUrl:
+'https://api.cartridge.gg/x/starknet/mainnet' } case sepolia: default:
+return { nodeUrl: 'https://api.cartridge.gg/x/starknet/sepolia' } } },
+})</p>
+<p>export function StarknetProvider({ children }: { children:
+React.ReactNode }) { return ( &lt;StarknetConfig autoConnect
+defaultChainId={mainnet.id} chains={[mainnet, sepolia]}
+provider={provider} connectors={[connector]} explorer={starkscan} &gt;
+{children} </StarknetConfig> ) } ```</p>
+<h3>2. Create a Wallet Connection Component</h3>
+<p>Use the <code>useConnect</code>, <code>useDisconnect</code>, and
+<code>useAccount</code> hooks to manage wallet connections:</p>
+<p>``` import { useAccount, useConnect, useDisconnect } from
+'@starknet-react/core' import { useEffect, useState } from 'react'
+import ControllerConnector from '@cartridge/connector/controller' import
+{ Button } from '@cartridge/ui'</p>
+<p>export function ConnectWallet() { const { connect, connectors } =
+useConnect() const { disconnect } = useDisconnect() const { address } =
+useAccount() const controller = connectors[0] as ControllerConnector
+const [username, setUsername] = useState<string>()</p>
+<p>useEffect(() =&gt; { if (!address) return
+controller.username()?.then((n) =&gt; setUsername(n)) }, [address,
+controller])</p>
+<p>return ( <div> {address &amp;&amp; ( &lt;&gt; <p>Account:
+{address}</p> {username &amp;&amp; <p>Username: {username}</p>}
+&lt;/&gt; )} {address ? ( &lt;Button onClick={() =&gt;
+disconnect()}&gt;Disconnect</Button> ) : ( &lt;Button onClick={() =&gt;
+connect({ connector: controller })}&gt; Connect </Button> )} </div> ) }
+```</p>
+<h3>3. Performing Transactions</h3>
+<p>Execute transactions using the <code>account</code> object from
+<code>useAccount</code> hook:</p>
+<p>``` import { useAccount, useExplorer } from '@starknet-react/core'
+import { useCallback, useState } from 'react'</p>
+<p>const ETH_CONTRACT =
+'0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7'</p>
+<p>export const TransferEth = () =&gt; { const [submitted, setSubmitted]
+= useState<boolean>(false) const { account } = useAccount() const
+explorer = useExplorer() const [txnHash, setTxnHash] =
+useState<string>()</p>
+<p>const execute = useCallback( async (amount: string) =&gt; { if
+(!account) return setSubmitted(true) setTxnHash(undefined) try { const
+result = await account.execute([ { contractAddress: ETH<em>CONTRACT,
+entrypoint: 'approve', calldata: [account?.address, amount, '0x0'], }, {
+contractAddress: ETH</em>CONTRACT, entrypoint: 'transfer', calldata:
+[account?.address, amount, '0x0'], }, ])
+setTxnHash(result.transaction_hash) } catch (e) { console.error(e) }
+finally { setSubmitted(false) } }, [account], )</p>
+<p>if (!account) return null</p>
+<p>return ( <div> <h2>Transfer ETH</h2> &lt;button onClick={() =&gt;
+execute('0x1C6BF52634000')} disabled={submitted}&gt; Transfer 0.005 ETH
+</button> {txnHash &amp;&amp; ( <p> Transaction hash:{' '} <a
+            href={explorer.transaction(txnHash)}
+            target="blank"
+            rel="noreferrer"
+          > {txnHash} </a> </p> )} </div> ) } ```</p>
+<h3>4. Add Components to Your App</h3>
+<p>``` import { StarknetProvider } from './context/StarknetProvider'
+import { ConnectWallet } from './components/ConnectWallet' import {
+TransferEth } from './components/TransferEth'</p>
+<p>function App() { return ( <StarknetProvider> <ConnectWallet />
+<TransferEth /> </StarknetProvider> ) } export default App ```</p>
+<h2>Important Notes</h2>
+<p>Make sure to use HTTPS in development by configuring Vite:</p>
+<p>``` import { defineConfig } from 'vite' import react from
+'@vitejs/plugin-react' import mkcert from 'vite-plugin-mkcert'</p>
+<p>export default defineConfig({ plugins: [react(), mkcert()], })
+```</p>
+<hr />
+<h2>Controller Rust Integration – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/examples/rust</p>
+<h2>Installation</h2>
+<p>Add the <code>account_sdk</code> crate to your
+<code>Cargo.toml</code>:</p>
+<p><code>[dependencies] account_sdk = { git = "https://github.com/cartridge-gg/controller-rs.git", package = "account_sdk" } starknet = "0.10" # Make sure to use a compatible version</code></p>
+<h3>Importing Necessary Modules</h3>
+<p><code>use account_sdk::{     controller::Controller,     signers::Signer, }; use starknet::{     accounts::Account,     providers::Provider,     signers::SigningKey,     core::types::FieldElement, };</code></p>
+<h3>Setting Up the Controller</h3>
+<p>Initialize the controller with necessary parameters:</p>
+<p>```</p>
+<h1>[tokio::main]</h1>
+<p>async fn main() { // Create a signer (replace with your own private
+key) let owner =
+Signer::Starknet(SigningKey::from<em>secret</em>scalar(FieldElement::from<em>hex</em>be("0xYourPrivateKey").unwrap()));</p>
+<pre><code>// Initialize the provider (replace with your RPC URL)
+let provider = Provider::try_from(&quot;http://localhost:5050&quot;).unwrap();
+let chain_id = provider.chain_id().await.unwrap();
+
+// Create a new Controller instance
+let username = &quot;testuser&quot;.to_string();
+let controller = Controller::new(
+    &quot;your_app_id&quot;.to_string(),
+    username.clone(),
+    FieldElement::from_hex_be(&quot;0xYourClassHash&quot;).unwrap(), // Class hash
+    &quot;http://localhost:5050&quot;.parse().unwrap(), // RPC URL
+    owner.clone(),
+    FieldElement::from_hex_be(&quot;0xYourControllerAddress&quot;).unwrap(), // Controller address
+    chain_id,
+);
+
+// Deploy the controller
+controller.deploy().await.unwrap();
+
+// Interact with the controller
+// For example, execute a transaction
+let call = your_function_call(); // Define your function call
+controller.execute(vec![call], None).await.unwrap();</code></pre>
+<p>} ```</p>
+<h3>Performing Transactions</h3>
+<p>Define function calls and execute them:</p>
+<p><code>fn your_function_call() -&gt; starknet::core::types::FunctionCall {     starknet::core::types::FunctionCall {         contract_address: FieldElement::from_hex_be("0xYourContractAddress").unwrap(),         entry_point_selector: starknet::core::utils::get_selector_from_name("yourEntryPoint").unwrap(),         calldata: vec![FieldElement::from(123)], // Replace with your calldata     } }</code></p>
+<p>Execute the function call using the controller:</p>
+<p><code>controller.execute(vec![your_function_call()], None).await.unwrap();</code></p>
+<hr />
+<h2>Controller Svelte Integration – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/examples/svelte</p>
+<h2>Installation</h2>
+<p>npmpnpmyarnbun</p>
+<p>npm</p>
+<p><code>npm install @cartridge/controller starknet</code></p>
+<h2>Setting Up the Controller</h2>
+<p>Import the <code>Controller</code> and create an instance:</p>
+<p>``` // src/routes/+page.svelte import { onMount } from "svelte";
+import Controller from "@cartridge/controller"; import { account,
+username } from "../stores/account"; import { ETH_CONTRACT } from
+"../constants";</p>
+<p>let controller = new Controller({ policies: { contracts: {
+[ETH_CONTRACT]: { methods: [ { name: "approve", entrypoint: "approve",
+description: "Approve spending of tokens", }, { name: "transfer",
+entrypoint: "transfer", description: "Transfer tokens", }, ], }, }, },
+}); ```</p>
+<h3>Connecting a Wallet</h3>
+<p>Use the <code>connect</code> method to establish a connection:</p>
+<p>``` <script lang="ts"> async function connect() { try { const res =
+await controller.connect(); if (res) { account.set(controller);
+username.set(await controller.username()); } } catch (e) {
+console.log(e); } }</p>
+<pre><code>onMount(async () =&gt; {
+    if (await controller.probe()) {
+        // auto connect
+        await connect();
+    }
+    loading = false;
+});</code></pre>
+</script>
+<button on:click={connect}>
+<p>Connect</button> ```</p>
+<h3>Disconnecting a Wallet</h3>
+<p>Implement a disconnect function:</p>
+<p>``` <script lang="ts"> function disconnect() {
+controller.disconnect(); account.set(undefined);
+username.set(undefined); } </script></p>
+<button on:click={disconnect}>
+<p>Disconnect</button> ```</p>
+<h3>Displaying User Information</h3>
+<p>Create a <code>UserInfo</code> component to show account details:</p>
+<p>``` <!-- src/components/UserInfo.svelte --> <script lang="ts"> export
+let accountAddress: string | undefined; export let username: string |
+undefined; </script></p>
+<h2>User Information</h2>
+<div>
+    {#if accountAddress}
+        <p>Account Address: {accountAddress}</p>
+    {:else}
+        <p>No account connected</p>
+    {/if}
+ 
+    {#if username}
+        <p>Username: {username}</p>
+    {/if}
+</div>
+<p>```</p>
+<h3>Performing Transactions</h3>
+<p>Create a <code>TransferEth</code> component for executing
+transactions:</p>
+<p>``` <!-- src/components/TransferEth.svelte --> <script lang="ts">
+import { AccountInterface } from 'starknet'; import { ETH_CONTRACT }
+from '../constants'; export let account: AccountInterface |
+undefined;</p>
+<pre><code>async function execute(amount: string, manual: boolean) {
+    if (!account) return;
+
+    try {
+        const result = await account.execute([
+            {
+                contractAddress: ETH_CONTRACT,
+                entrypoint: manual ? &#39;increaseAllowance&#39; : &#39;approve&#39;,
+                calldata: [account.address, amount, &#39;0x0&#39;]
+            },
+            {
+                contractAddress: ETH_CONTRACT,
+                entrypoint: &#39;transfer&#39;,
+                calldata: [account.address, amount, &#39;0x0&#39;]
+            }
+        ]);
+        console.log(&#39;Transaction hash:&#39;, result.transaction_hash);
+    } catch (e) {
+        console.error(e);
+    }
+}</code></pre>
+</script>
+<h2>Transfer Eth</h2>
+<p>&lt;button on:click={() =&gt; execute('0x0', false)}&gt;Transfer 0
+ETH to self</button> &lt;button on:click={() =&gt;
+execute('0x1C6BF52634000', false)}&gt;Transfer 0.005 ETH to
+self</button> &lt;button on:click={() =&gt; execute('0x0',
+true)}&gt;Manual: Transfer 0 ETH to self</button> ```</p>
+<h3>Full Example</h3>
+<p>Here's how your main <code>+page.svelte</code> might look:</p>
+<p>``` <script lang="ts"> import { onMount } from 'svelte'; import
+Controller from '@cartridge/controller'; import { account, username }
+from '../stores/account'; import UserInfo from
+'../components/UserInfo.svelte'; import TransferEth from
+'../components/TransferEth.svelte'; import { ETH_CONTRACT } from
+'../constants';</p>
+<pre><code>let controller = new Controller({
+    policies: [
+        // ... your policies here
+    ]
+});
+
+let loading: boolean = true;
+
+async function connect() {
+    // ... connection logic
+}
+
+function disconnect() {
+    // ... disconnection logic
+}
+
+onMount(async () =&gt; {
+    // ... auto-connect logic
+});</code></pre>
+</script>
+<h1>SvelteKit + Controller Example</h1>
+<div>
+    {#if loading}
+        <p>Loading</p>
+    {:else if $account}
+        <button on:click={disconnect}>Disconnect</button>
+    {:else}
+        <button on:click={connect}>Connect</button>
+    {/if}
+</div>
+<p>{#if $account &amp;&amp; !loading}
+<UserInfo accountAddress={$account?.address} username={$username} />
+<TransferEth account={$account} /> {/if} ```</p>
+<p>This example demonstrates how to set up the Controller,
+connect/disconnect a wallet, display user information, and perform
+transactions in a Svelte application using the Cartridge Controller.</p>
+<hr />
+<h2>Controller Telegram Integration – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/controller/examples/telegram</p>
+<h2>Controller Integration Flow</h2>
+<ol>
+<li>Generate local Stark key pair and store private key in Telegram
+cloud storage</li>
+<li>Open session controller page with user's public key</li>
+<li>Controller registers session public key and returns account
+info</li>
+<li>Create controller session account on client</li>
+<li>Store account info in Telegram cloud storage</li>
+</ol>
+<hr />
+<h2>Setting up the Session Provider</h2>
+<h3>1. Define your configuration:</h3>
+<p>``` // config.ts export const RPC_URL =
+"https://api.cartridge.gg/x/starknet/mainnet";</p>
+<p>// Define your session policies export const SESSION_POLICIES = {
+contracts: {
+"0x70fc96f845e393c732a468b6b6b54d876bd1a29e41a026e8b13579bf98eec8f": {
+name: "Beast Game Contract", description: "Contract for beast game
+interactions", methods: [ { name: "attack", entrypoint: "attack",
+description: "Attack the beast", }, { name: "claim", entrypoint:
+"claim", description: "Claim your tokens", }, ], }, }, };</p>
+<p>export const REDIRECT_URI = "https://t.me/hitthingbot/hitthing";
+```</p>
+<h3>2. Create the SessionProvider:</h3>
+<p>``` import { PropsWithChildren, createContext, useContext, useEffect,
+useState } from "react"; import { constants } from "starknet"; import
+SessionConnector from "@cartridge/connector/session"; import {
+StarknetConfig, jsonRpcProvider } from "@starknet-react/core"; import {
+useLaunchParams, cloudStorage } from "@telegram-apps/sdk-react"; import
+{ RPC<em>URL, SESSION</em>POLICIES, REDIRECT_URI } from "./config";</p>
+<p>const connector = new SessionConnector({ policies:
+SESSION<em>POLICIES, rpc: RPC</em>URL, chainId:
+constants.StarknetChainId.SN<em>MAINNET, redirectUrl: REDIRECT</em>URI,
+});</p>
+<p>const provider = jsonRpcProvider({ rpc: () =&gt; ({ nodeUrl: RPC_URL
+}), });</p>
+<p>export function SessionProvider({ children }: PropsWithChildren) {
+return ( <StarknetConfig
+      autoConnect
+      connectors={[connector]}
+      provider={provider}
+    > {children} </StarknetConfig> ); } ```</p>
+<h3>3. Use the SessionProvider in your app:</h3>
+<p>``` // App.tsx import { SessionProvider } from
+"./SessionProvider";</p>
+<p>function App() { return ( <SessionProvider> <YourApp />
+</SessionProvider> ); } ```</p>
+<h3>4. Use the session in your components:</h3>
+<p>``` function GameComponent() { const { isConnected, connect,
+disconnect } = useSession();</p>
+<p>const handleConnect = async () =&gt; { try { await connect(); } catch
+(error) { console.error("Failed to connect:", error); } };</p>
+<p>return ( <div> {!isConnected ? (
+<button onClick={handleConnect}>Connect Wallet</button> ) : (
+<button onClick={disconnect}>Disconnect</button> )}</p>
+<pre><code>  {isConnected &amp;&amp; (
+    &lt;div&gt;
+      {/* Your game content */}
+    &lt;/div&gt;
+  )}
+&lt;/div&gt;</code></pre>
+<p>); } ```</p>
+<h3>5. Error Handling</h3>
+<p>``` function GameComponent() { const { connect } = useSession();
+const [error, setError] = useState<string>();</p>
+<p>const handleConnect = async () =&gt; { try { await connect(); } catch
+(err) { setError(err instanceof Error ? err.message : "Failed to
+connect"); } };</p>
+<p>return ( <div> {error &amp;&amp;
+<div className="error">{error}</div>}
+<button onClick={handleConnect}>Connect</button> </div> ); } ```</p>
+<p>See the full example <a
+href="https://github.com/cartridge-gg/beast-slayers">here</a>.</p>
+<h2>Next.js Configuration for WebAssembly</h2>
+<p>If you're using Next.js, you'll need to configure it to properly
+handle WebAssembly modules used by the SessionController and
+SessionConnector. Create or update your <code>next.config.js</code>:</p>
+<p>``` /** @type {import('next').NextConfig} */ const nextConfig = {
+reactStrictMode: true, webpack: (config, { isServer, dev }) =&gt; { //
+Enable WebAssembly config.experiments = { asyncWebAssembly: true,
+topLevelAwait: true, };</p>
+<pre><code>// Fix for WebAssembly in production builds
+if (!dev &amp;&amp; isServer) {
+  config.output.webassemblyModuleFilename = &quot;chunks/[id].wasm&quot;;
+  config.plugins.push(new WasmChunksFixPlugin());
+}
+
+return config;</code></pre>
+<p>}, };</p>
+<p>// Plugin to fix WASM chunk loading in production class
+WasmChunksFixPlugin { apply(compiler) {
+compiler.hooks.thisCompilation.tap("WasmChunksFixPlugin", (compilation)
+=&gt; { compilation.hooks.processAssets.tap( { name:
+"WasmChunksFixPlugin" }, (assets) =&gt;
+Object.entries(assets).forEach(([pathname, source]) =&gt; { if
+(!pathname.match(/.wasm$/)) return;
+compilation.deleteAsset(pathname);</p>
+<pre><code>        const name = pathname.split(&quot;/&quot;)[1];
+        const info = compilation.assetsInfo.get(pathname);
+        compilation.emitAsset(name, source, info);
+      }),
+  );
+});</code></pre>
+<p>} }</p>
+<p>module.exports = nextConfig; ```</p>
+<hr />
+<h2>Slot Getting Started – Cartridge Documentation</h2>
+<p><strong>Source:</strong>
+https://docs.cartridge.gg/slot/getting-started</p>
+<p>Slot is the execution layer of Dojo, supporting rapid provisioning of
+low latency, dedicated, provable execution contexts, bringing horizontal
+scalability to the blockchain. It manages the sequencing, proving, and
+efficient settlement of its execution.</p>
+<h2>Installation</h2>
+<p>Install slotup to manage slot installations and follow the outputted
+directions.</p>
+<p><code>curl -L https://slot.cartridge.sh | bash</code></p>
+<h2>Usage</h2>
+<p>Authenticate with Cartridge</p>
+<p><code>slot auth login</code></p>
+<h2>Programmatic usage</h2>
+<p>First, authenticate as mentioned above. Then, run:</p>
+<p><code>slot auth token</code></p>
+<p>Follow instructions and save the output to set the SLOT_AUTH env var.
+You can set this environment variable in CI, scripts, or deployment
+platforms to run slot without having to login.</p>
+<h3>Create service deployments</h3>
+<p><code>slot deployments create &lt;Project Name&gt; katana slot deployments create &lt;Project Name&gt; torii --world 0x3fa481f41522b90b3684ecfab7650c259a76387fab9c380b7a959e3d4ac69f</code></p>
+<h3>Update a service</h3>
+<p><code>slot deployments update &lt;Project Name&gt; torii --version v0.3.5</code></p>
+<h3>Delete a service</h3>
+<p><code>slot deployments delete &lt;Project Name&gt; torii</code></p>
+<h3>Read service logs</h3>
+<p><code>slot deployments logs &lt;Project Name&gt; &lt;katana | torii&gt;</code></p>
+<h3>List all deployments</h3>
+<p><code>slot deployments list</code></p>
+<h3>View deployments configuration</h3>
+<p><code>slot deployments describe &lt;Project Name&gt; &lt;katana | torii&gt;</code></p>
+<h3>View predeployed accounts</h3>
+<p><code>slot deployments accounts &lt;Project Name&gt; katana</code></p>
+<h3>Manage collaborators with teams</h3>
+<p>The name of the team is the same as the project name used to create a
+service. A team is automatically created when you create a new
+project.</p>
+<p><code>slot teams &lt;Team Name&gt; list slot teams &lt;Team Name&gt; add &lt;Account Name&gt; slot teams &lt;Team Name&gt; remove &lt;Account Name&gt;</code></p>
+<h3>Fund teams</h3>
+<p>Teams need credits to run services and paymasters. You can fund teams
+using CLI commands or the web interface:</p>
+<p><strong>CLI:</strong></p>
+<p><code>slot auth fund slot auth transfer &lt;Team Name&gt; --credits &lt;amount&gt;</code></p>
+<p><strong>Web Interface:</strong> Navigate to
+<code>https://x.cartridge.gg/slot/fund</code> to fund teams through a
+user-friendly interface with credit card or crypto payments.</p>
+<hr />
+<h2>Paymaster Management – Cartridge Documentation</h2>
+<p><strong>Source:</strong> https://docs.cartridge.gg/slot/paymaster</p>
+<p>Paymasters in Slot allow you to sponsor transaction fees for your
+applications, enabling gasless experiences for your users. The Cartridge
+Paymaster is a powerful feature that enables gasless transactions for
+your users, creating a more seamless Web3 experience. When enabled, the
+paymaster automatically covers transaction fees on behalf of your users,
+eliminating the need for them to hold ETH / STRK for gas fees. You can
+manage budgets, policies, and monitor usage through the Slot CLI.</p>
+<h2>Availability</h2>
+<p>The paymaster service is available across all networks with different
+activation requirements:</p>
+<ul>
+<li><strong>Testnet Networks</strong>
+<ul>
+<li>Automatically enabled, no additional setup required</li>
+</ul></li>
+<li><strong>Mainnet</strong>
+<ul>
+<li>Available and fully self-served</li>
+<li>Manage everything through the Slot CLI</li>
+<li>Define your own usage scopes and spending limits</li>
+</ul></li>
+</ul>
+<h2>Integration</h2>
+<p>One of the key benefits of the Cartridge Paymaster is that it
+requires zero additional integration work. When the paymaster is enabled
+for your application, it will automatically activate for all eligible
+transactions. No code changes or configuration are needed.</p>
+<h2>Prerequisites</h2>
+<p>Make sure you are authenticated with Slot:</p>
+<p><code>slot auth login</code></p>
+<h2>Team Setup</h2>
+<p>Before creating a paymaster, you need a team with sufficient
+credits.</p>
+<h3>Create a Team (if it doesn't exist)</h3>
+<p><code>slot teams &lt;team-name&gt; create --email &lt;your-email@example.com&gt;</code></p>
+<h3>Fund Your Account and Transfer to Team</h3>
+<p>Paymasters automatically deduct from your team's account balance when
+created. If you don't have sufficient credits:</p>
+<p><code># Buy credits for your account (opens browser) slot auth fund</code></p>
+<ol>
+<li>Select the team you want to fund from the list</li>
+<li>Choose your payment method (credit card or crypto)</li>
+<li>Complete the purchase</li>
+</ol>
+<h2>Creating a Paymaster</h2>
+<p>Create a new paymaster with an initial budget:</p>
+<p><code>slot paymaster &lt;paymaster-name&gt; create --team &lt;team-name&gt; --budget &lt;amount&gt; --unit CREDIT</code></p>
+<h3>Example</h3>
+<p><code>slot paymaster my-game-pm create --team my-team --budget 1000 --unit CREDIT</code></p>
+<p><strong>Output:</strong></p>
+<p>``` ✅ Paymaster Created Successfully
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p>🏢 Details: • Name: my-game-pm • Team: my-team</p>
+<p>💰 Initial Budget: • Amount: 1000 CREDIT ($10.00 USD) ```</p>
+<h2>Managing Budget</h2>
+<h3>Increase Budget</h3>
+<p>Add funds to your paymaster:</p>
+<p><code>slot paymaster &lt;paymaster-name&gt; budget increase --amount &lt;amount&gt; --unit CREDIT</code></p>
+<p><strong>Output:</strong></p>
+<p>``` ✅ Budget Increased Successfully
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p>🏢 Paymaster: my-game-pm</p>
+<p>📈 Operation: • Action: Increased • Amount: 500 CREDIT</p>
+<p>💰 New Budget: • Amount: 1500 CREDIT ($15.00 USD) ```</p>
+<h3>Decrease Budget</h3>
+<p>Remove funds from your paymaster:</p>
+<p><code>slot paymaster &lt;paymaster-name&gt; budget decrease --amount &lt;amount&gt; --unit CREDIT</code></p>
+<p><strong>Output:</strong></p>
+<p>``` ✅ Budget Decreased Successfully
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p>🏢 Paymaster: my-game-pm</p>
+<p>📉 Operation: • Action: Decreased • Amount: 200 CREDIT</p>
+<p>💰 New Budget: • Amount: 1300 CREDIT ($13.00 USD) ```</p>
+<h2>Policy Management</h2>
+<p>Policies define which contracts and entry points your paymaster will
+sponsor.</p>
+<h3>Add Policies from Preset (Recommended)</h3>
+<p>The preferred way to add policies is using verified contract presets
+for your games:</p>
+<p><code>slot paymaster &lt;paymaster-name&gt; policy add-from-preset --name &lt;preset-name&gt;</code></p>
+<p><strong>Example:</strong></p>
+<p><code>slot paymaster my-game-pm policy add-from-preset --name dope-wars</code></p>
+<h3>Add a Single Policy</h3>
+<p>For individual contract policies or custom contracts not yet in
+presets:</p>
+<p><code>slot paymaster &lt;paymaster-name&gt; policy add --contract &lt;contract-address&gt; --entrypoint &lt;entry-point&gt;</code></p>
+<h3>Add Policies from JSON File</h3>
+<p>For bulk adding multiple custom policies:</p>
+<p><code>slot paymaster &lt;paymaster-name&gt; policy add-from-json --file &lt;path-to-json&gt;</code></p>
+<p><strong>JSON Format:</strong></p>
+<p><code>[   {     "contractAddress": "0x1234...abcd",     "entryPoint": "move_player"   },   {     "contractAddress": "0x5678...efgh",     "entryPoint": "attack"   } ]</code></p>
+<h3>Remove a Policy</h3>
+<p><code>slot paymaster &lt;paymaster-name&gt; policy remove --contract &lt;contract-address&gt; --entrypoint &lt;entry-point&gt;</code></p>
+<p><strong>Output:</strong></p>
+<p><code>Successfully removed policy: PolicyArgs { contract: "0x1234...abcd", entrypoint: "move_player" }</code></p>
+<h3>Remove All Policies</h3>
+<p><code>slot paymaster &lt;paymaster-name&gt; policy remove-all</code></p>
+<h3>List Policies</h3>
+<p><code>slot paymaster &lt;paymaster-name&gt; policy list</code></p>
+<h2>Paymaster Information</h2>
+<p>Get comprehensive information about your paymaster:</p>
+<p><code>slot paymaster &lt;paymaster-name&gt; info</code></p>
+<p><strong>Output:</strong></p>
+<p>``` 🔍 Paymaster Info for 'my-game-pm'
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 🏢 Details: • Team:
+my-team • Active: ✅ Yes</p>
+<p>💰 Budget: • Total: 9000 CREDIT ($90.00 USD) • Spent: 1759.56 CREDIT
+($17.60 USD) • Usage: [█████░░░░░░░░░░░░░░░░░░░░░░░░░] 19.7%</p>
+<p>📋 Policies: • Count: 3 ```</p>
+<h2>Updating Paymaster Configuration</h2>
+<p>Update your paymaster's basic configuration settings:</p>
+<p><code>slot paymaster &lt;current-name&gt; update [OPTIONS]</code></p>
+<h3>Update Paymaster Name</h3>
+<p><code>slot paymaster my-game-pm update --name new-game-pm</code></p>
+<h3>Change Team Association</h3>
+<p>Transfer the paymaster to a different team:</p>
+<p><code>slot paymaster my-game-pm update --team new-team</code></p>
+<h3>Enable/Disable Paymaster</h3>
+<p>Toggle the active state of your paymaster:</p>
+<p>```</p>
+<h1>Disable paymaster (stops sponsoring transactions)</h1>
+<p>slot paymaster my-game-pm update --active false</p>
+<h1>Re-enable paymaster</h1>
+<p>slot paymaster my-game-pm update --active true ```</p>
+<h2>Statistics and Monitoring</h2>
+<p>View usage statistics for your paymaster:</p>
+<p><code>slot paymaster &lt;paymaster-name&gt; stats --last &lt;time-period&gt;</code></p>
+<p><strong>Example:</strong></p>
+<p><code>slot paymaster my-game-pm stats --last 24hr</code></p>
+<p><strong>Time Period Options:</strong></p>
+<ul>
+<li><code>1hr</code>, <code>2hr</code>, <code>24hr</code></li>
+<li><code>1day</code>, <code>2day</code>, <code>7day</code></li>
+<li><code>1week</code></li>
+</ul>
+<p><strong>Output:</strong></p>
+<p>``` 📊 Paymaster Stats for 'my-game-pm' (Last 24hr)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 📈 Transactions: • Total:
+1,247 • Successful: 1,198 • Reverted: 49 • Success Rate: 96.1%</p>
+<p>💰 Fees (USD): • Total (24hr): $12.45 • Average: $0.009988 • Minimum:
+$0.001234 • Maximum: $0.045678</p>
+<p>👥 Users: • Unique Users: 89 ```</p>
+<h2>Transaction History</h2>
+<p>View detailed transaction history for your paymaster with filtering
+and sorting options:</p>
+<p><code>slot paymaster &lt;paymaster-name&gt; transactions [OPTIONS]</code></p>
+<h3>Basic Usage</h3>
+<p>View recent transactions:</p>
+<p><code>slot paymaster my-game-pm transactions</code></p>
+<p><strong>Output:</strong></p>
+<p><code>📊 Paymaster Transactions for 'my-game-pm' (Last 24hr) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Transaction Hash                                                   Executed     Status       USD Fee ────────────────────────────────────────────────────────────────────────────────────────────────────────────── 0x50c2dd556593564fe2b814d61b3b1592682de83702552a993d24f9e897710e7  11s ago      SUCCESS      $0.0026 0x41b0f547741bd1fdc29dd4c82a80da2a452314e710ae7cbe0e05cb4cb1e6c0e  22s ago      SUCCESS      $0.0025 0x4b74ee2ab7764cb3d11f3319b64c2698b868727fdf99728bdf74aa023b5e77d  32s ago      REVERTED     $0.0028 0x2af69b9798355e91119c6a9adb1363b2f533f0557601e4687dcfe9725e8feaa  42s ago      SUCCESS      $0.0025 0x25dfc115dabda89a2027366790ee5cfcfefb861fe1b584c6fb15dc1588e0816  47s ago      REVERTED     $0.0032</code></p>
+<h3>Filtering Options</h3>
+<p><strong>Filter by Status:</strong></p>
+<p>```</p>
+<h1>Show only successful transactions</h1>
+<p>slot paymaster my-game-pm transactions --filter SUCCESS</p>
+<h1>Show only reverted transactions</h1>
+<p>slot paymaster my-game-pm transactions --filter REVERTED</p>
+<h1>Show all transactions (default)</h1>
+<p>slot paymaster my-game-pm transactions --filter ALL ```</p>
+<p><strong>Time Period:</strong></p>
+<p><code># Last hour slot paymaster my-game-pm transactions --last 1hr</code></p>
+<p><strong>Sorting:</strong></p>
+<p>```</p>
+<h1>Sort by fees (ascending)</h1>
+<p>slot paymaster my-game-pm transactions --order-by FEES_ASC</p>
+<h1>Sort by fees (descending)</h1>
+<p>slot paymaster my-game-pm transactions --order-by FEES_DESC</p>
+<h1>Sort by execution time (most recent first - default)</h1>
+<p>slot paymaster my-game-pm transactions --order-by
+EXECUTED<em>AT</em>DESC</p>
+<h1>Sort by execution time (oldest first)</h1>
+<p>slot paymaster my-game-pm transactions --order-by
+EXECUTED<em>AT</em>ASC ```</p>
+<p><strong>Limit Results:</strong></p>
+<p><code># Show up to 50 transactions (max 1000) slot paymaster my-game-pm transactions --limit 50</code></p>
+<h2>Dune Analytics Queries</h2>
+<p>Generate Dune Analytics queries to analyze your paymaster's
+transaction data:</p>
+<p><code>slot paymaster &lt;paymaster-name&gt; dune [OPTIONS]</code></p>
+<h3>Example Dashboard</h3>
+<p>See a live example of paymaster analytics at <a
+href="https://dune.com/broody/blobert-arena-stats">Blob Arena Stats</a>
+on Dune Analytics.</p>
+<h3>Query Types</h3>
+<p><strong>Fast Query (Default)</strong></p>
+<p><code>slot paymaster my-game-pm dune</code></p>
+<ul>
+<li>Quick execution suitable for long time periods</li>
+<li>Matches direct execute_from_outside_v3 calls and simple vRNG
+patterns</li>
+<li>Does not catch complex nested vRNG calls</li>
+<li>Best for initial analysis and long-term trends</li>
+</ul>
+<p><strong>Exact Query</strong></p>
+<p><code>slot paymaster my-game-pm dune --exact</code></p>
+<ul>
+<li>Exhaustive search of all transaction patterns</li>
+<li>Uses execute_from_outside_v3 selector as anchor</li>
+<li>Catches all patterns including nested vRNG calls</li>
+<li>May timeout on long time periods</li>
+<li>Best for exact metrics</li>
+</ul>
+<h3>Time Period Options</h3>
+<p>By default, queries use the paymaster's creation time. You can
+specify a custom time period:</p>
+<p>```</p>
+<h1>Last 24 hours</h1>
+<p>slot paymaster my-game-pm dune --last 24hr</p>
+<h1>Last week</h1>
+<p>slot paymaster my-game-pm dune --last 1week</p>
+<h1>Combine with exact query</h1>
+<p>slot paymaster my-game-pm dune --exact --last 24hr ```</p>
+<p><strong>Time Period Options:</strong></p>
+<ul>
+<li><code>1hr</code>, <code>2hr</code>, <code>24hr</code></li>
+<li><code>1day</code>, <code>2day</code>, <code>7day</code></li>
+<li><code>1week</code></li>
+</ul>
+<h3>Query Output</h3>
+<p>The command generates a SQL query that you can copy and run in Dune
+Analytics. The query includes:</p>
+<ul>
+<li>Daily transaction counts</li>
+<li>Unique user counts</li>
+<li>Fee amounts in USD</li>
+<li>Overall totals</li>
+</ul>
+<h3>Quick Debugging Use Cases</h3>
+<p>The transaction history is useful for identifying issues:</p>
+<p><strong>View expensive transactions that might indicate inefficient
+contract calls:</strong></p>
+<p><code>slot paymaster my-game-pm transactions --order-by FEES_DESC --limit 10</code></p>
+<p><strong>Investigate failed transactions to debug contract
+issues:</strong></p>
+<p><code>slot paymaster my-game-pm transactions --filter REVERTED --last 24hr</code></p>
+<h2>Best Practices</h2>
+<h3>Budget Management</h3>
+<ul>
+<li>Start with a conservative budget and increase as needed</li>
+<li>Monitor spending through the stats command</li>
+<li>Keep sufficient team balance for paymaster operations</li>
+</ul>
+<h3>Policy Management</h3>
+<ul>
+<li>Be specific with your policies to avoid sponsoring unintended
+transactions</li>
+<li><strong>Use presets whenever possible</strong> for verified game
+contracts in the Dojo ecosystem</li>
+<li>Contribute your game contracts to the preset repository for
+community verification</li>
+<li>Regularly review and update policies as your application
+evolves</li>
+<li>Test policies with small budgets before scaling up</li>
+</ul>
+<h3>Security</h3>
+<ul>
+<li>Only add policies for contracts you trust</li>
+<li>Keep your team membership limited to necessary collaborators</li>
+</ul>
+<h2>Common Workflows</h2>
+<h3>Setting up a new game paymaster</h3>
+<p>```</p>
+<h1>Create team if it doesn't exist</h1>
+<p>slot teams my-team create --email developer@mygame.com</p>
+<h1>Fund your account and transfer to team</h1>
+<p>slot auth fund slot auth transfer my-team --credit 100</p>
+<h1>Create paymaster</h1>
+<p>slot paymaster my-game-pm create --team my-team --budget 1000 --unit
+CREDIT</p>
+<h1>Add game contract policies</h1>
+<p>slot paymaster my-game-pm policy add --contract 0x123...abc
+--entrypoint move<em>player slot paymaster my-game-pm policy add
+--contract 0x123...abc --entrypoint attack</em>enemy slot paymaster
+my-game-pm policy add --contract 0x123...abc --entrypoint use_item</p>
+<h1>Check initial setup</h1>
+<p>slot paymaster my-game-pm info ```</p>
+<h3>Monitoring and maintenance</h3>
+<p>```</p>
+<h1>Check daily stats</h1>
+<p>slot paymaster my-game-pm stats --last 24hr</p>
+<h1>Check current status</h1>
+<p>slot paymaster my-game-pm info</p>
+<h1>Add more budget if needed (ensure team has credits)</h1>
+<p>slot paymaster my-game-pm budget increase --amount 500 --unit CREDIT
+```</p>
+<h3>Insufficient Credits Error</h3>
+<p>If you encounter insufficient credits when creating or funding a
+paymaster:</p>
+<p>```</p>
+<h1>Check team balance first</h1>
+<p>slot teams my-team info</p>
+<h1>Fund your account if needed</h1>
+<p>slot auth fund</p>
+<h1>Transfer more credits to team</h1>
+<p>slot auth transfer my-team --credit 50</p>
+<h1>Retry your paymaster operation</h1>
+<p>slot paymaster my-game-pm create --team my-team --budget 1000 --unit
+CREDIT ```</p>
+<hr />
+<h2>Scale your deployments – Cartridge Documentation</h2>
+<p><strong>Source:</strong> https://docs.cartridge.gg/slot/scale</p>
+<p>Slot instances are launched with the <code>basic</code> instance by
+default. This instance type is only suitable for testing and development
+purposes and comes with limited CPU &amp; memory. 3 deployments of the
+basic tier are free.</p>
+<p>To prepare your deployments for production, you can set up billing
+and upgrade to a paid instance tier.</p>
+<h2>Instances</h2>
+<p>| Tier | Description | Storage | Old cost | Cost from July 1st | |
+--- | --- | --- | --- | --- | | Basic | First 3 are free. for dev &amp;
+tests | 1GB | $3/month | $10/month | | Common | (removed) | auto |
+$15/month | – | | Pro | 2 vCPU and 4GB RAM | auto | - | $50/month | |
+Epic | 4 vCPU and 8GB RAM | auto | $15/month | $100/month | | Legendary
+| 8 vCPU and 16GB RAM | auto | $35/month | $200/month | | Insane |
+(removed) | auto | $50/month | - |</p>
+<p>Note: basic instances are scaled down automatically after a few hours
+of no activity. To revive deployments, simply send a single request to
+the instance URL, and it'll be revived on the spot. If unused without
+any activity for more than 30 days, it will get deleted.</p>
+<h3>Premium tiers</h3>
+<p>Pro and higher tiers are never scaled down or deleted as long as
+there are enough credits on the related team. They also come with auto
+storage scaling, which means your deployment can never run out of disk
+space.</p>
+<p>Storage is billed at $0.20/GB/month.</p>
+<h2>Replicas</h2>
+<p>For torii, with premium tiers, you can choose to deploy your
+instances with multiple replicas using the
+<code>--replicas &lt;n&gt;</code> flag.</p>
+<p><code>slot d create --tier epic my-project torii --replicas 3</code></p>
+<p>Replicas are billed as how many replicas you have. For example, if
+you have 3 replicas, you will be billed 3 times the monthly cost of the
+tier you are using.</p>
+<h2>Regions</h2>
+<p>For torii, with premium tiers, you can choose to deploy your
+instances in multiple regions.</p>
+<p>| Region | | --- | | <code>us-east</code> | |
+<code>europe-west</code> | | <code>asia-southeast</code> |</p>
+<p>To deploy a slot service in multiple regions, you can use the
+<code>--regions</code> flag.</p>
+<p>Katana is only supported in <code>us-east</code> at this time.</p>
+<p><code>slot d create --tier pro my-project torii --regions us-east,asia-southeast,europe-west</code></p>
+<p>Multi-region deployments are billed based on the number of regions
+you choose and the tier you are using by multiplying the monthly cost of
+the tier by the number of regions times replicas. For example, if you
+have two replicas in three regions, you will be billed six times the
+monthly cost of the tier you are using.</p>
+<h2>Set up billing</h2>
+<p>To set up slot billing, you need to buy credits and transfer them to
+a slot team.</p>
+<p>If you have existing deployments, a team of the same name as your
+account will be created for you, and you can transfer credits to it.</p>
+<p>``` slot teams my-team create --email my-email@example.com # email is
+required for billing alerts slot teams my-team update --email
+my-email@example.com # if you want to update an existing team's
+email</p>
+<p>slot auth fund # buy credits for your account, this opens the
+browser</p>
+<p>slot auth transfer my-team --usd 10 # transfer $10 from your
+controller to my-team</p>
+<h1>or</h1>
+<p>slot auth transfer my-team --credits 1000 # transfer 1000 credits
+($10) from your controller to my-team ```</p>
+<p>Once you create paid slot instances, funds are deducted on a daily
+basic with a minimum charge of one day. For example, if you create a
+deployment and delete it after one hour, you will be charged 1/30th of
+the monthly cost.</p>
+<h2>Create an instance with a paid tier</h2>
+<p>Make sure to use the team flag of the team you previously transferred
+credits to.</p>
+<p><code>slot d create --tier epic --team my-team my-instance torii</code></p>
+<h2>Update an existing instance to a paid tier</h2>
+<p>Note that you can only upgrade tiers; downgrading to a lower tier is
+not possible.</p>
+<p>Make sure that you created this instance with the team flag of the
+team you previously transferred credits to, or make sure the team it
+belongs to has credits available.</p>
+<p><code>slot d update --tier epic my-instance torii</code></p>
+<hr />
+<h2>vRNG Overview – Cartridge Documentation</h2>
+<p><strong>Source:</strong> https://docs.cartridge.gg/slot/vrng</p>
+<p>This Cartridge Verifiable Random Number Generator (vRNG) is designed
+to provide cheap, atomic verifiable randomness for fully onchain
+games.</p>
+<h2>Key Features</h2>
+<ol>
+<li><strong>Atomic Execution</strong>: The vRNG request and response are
+processed within the same transaction, ensuring synchronous and
+immediate randomness for games.</li>
+<li><strong>Efficient Onchain Verification</strong>: Utilizes the Stark
+curve and Poseidon hash for optimized verification on Starknet.</li>
+<li><strong>Fully Onchain</strong>: The entire vRNG process occurs
+onchain, maintaining transparency and verifiability.</li>
+<li><strong>Improved Player Experience</strong>: The synchronous nature
+of the vRNG allows for instant resolution of random events in games,
+enhancing gameplay fluidity.</li>
+</ol>
+<h2>How It Works</h2>
+<ol>
+<li>A game calls <code>request_random(caller, source)</code> as the
+first call in their multicall.</li>
+<li>A game contract calls <code>consume_random(source)</code> on the
+vRNG contract.</li>
+<li>The vRNG server generates a random value using the vRNG algorithm
+for the provided entropy source.</li>
+<li>The Cartridge Paymaster wraps the players multicall with a
+<code>submit_random</code> and <code>assert_consumed</code> call.</li>
+<li>The <code>submit_random</code> call submit a vRNG Proof for the
+request, the vRNG Proof is verified onchain, ensuring the integrity of
+the random value which is immediately available and must be used within
+the same transaction.</li>
+<li>The <code>assert_consumed</code> call ensures that
+<code>consume_random(source)</code> has been called, it also reset the
+storage used to store the random value during the transaction to 0.</li>
+</ol>
+<h2>Benefits for Game Developers</h2>
+<ul>
+<li><strong>Simplicity</strong>: Easy integration with existing Starknet
+smart contracts and Dojo.</li>
+<li><strong>Performance</strong>: Synchronous randomness generation
+without waiting for multiple transactions.</li>
+<li><strong>Cost-effectiveness</strong>: Potential cost savings through
+Paymaster integration.</li>
+<li><strong>Security</strong>: Cryptographically secure randomness
+that's fully verifiable onchain.</li>
+</ul>
+<h3>Deployments</h3>
+<p>| Network | Contract Address | Class Hash | | --- | --- | --- | |
+Mainnet | <a
+href="https://voyager.online/contract/0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c61421aa724e9ac0ced8f">0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c61421aa724e9ac0ced8f</a>
+| <a
+href="https://voyager.online/class/0x00be3edf412dd5982aa102524c0b8a0bcee584c5a627ed1db6a7c36922047257">0x00be3edf412dd5982aa102524c0b8a0bcee584c5a627ed1db6a7c36922047257</a>
+| | Sepolia | <a
+href="https://sepolia.voyager.online/contract/0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c61421aa724e9ac0ced8f">0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c61421aa724e9ac0ced8f</a>
+| <a
+href="https://sepolia.voyager.online/class/0x00be3edf412dd5982aa102524c0b8a0bcee584c5a627ed1db6a7c36922047257">0x00be3edf412dd5982aa102524c0b8a0bcee584c5a627ed1db6a7c36922047257</a>
+|</p>
+<p>For detailed implementation and usage, refer to the <a
+href="https://github.com/cartridge-gg/vrf">GitHub repository</a>.</p>
+<h2>Using the vRNG Provider</h2>
+<p>To integrate the Verifiable Random Function (vRNG) into your Starknet
+contract, follow these steps:</p>
+<ol>
+<li>Define the vRNG Provider interface:</li>
+</ol>
+<p>```</p>
+<h1>[starknet::interface]</h1>
+<p>trait IVrfProvider<TContractState> { fn request<em>random(self:
+@TContractState, caller: ContractAddress, source: Source); fn
+consume</em>random(ref self: TContractState, source: Source) -&gt;
+felt252; }</p>
+<h1>[derive(Drop, Copy, Clone, Serde)]</h1>
+<p>pub enum Source { Nonce: ContractAddress, Salt: felt252, } ```</p>
+<ol>
+<li>Define the vRNG Provider address in your contract:</li>
+</ol>
+<p><code>const VRF_PROVIDER_ADDRESS: starknet::ContractAddress = starknet::contract_address_const::&lt;0x123&gt;();</code></p>
+<ol>
+<li>Create a dispatcher for the vRNG Provider:</li>
+</ol>
+<p><code>let vrf_provider = IVrfProviderDispatcher { contract_address: VRF_PROVIDER_ADDRESS };</code></p>
+<ol>
+<li>To consume random values, use the following pattern in your contract
+functions:</li>
+</ol>
+<p>``` fn roll_dice(ref self: ContractState) { // Your game logic
+here...</p>
+<pre><code>// Consume random value
+let player_id = get_caller_address();
+let random_value = vrf_provider.consume_random(Source::Nonce(player_id));
+
+// Use the random value in your game logic
+// ...</code></pre>
+<p>} ```</p>
+<ol>
+<li><p>You can use either <code>Source::Nonce(ContractAddress)</code> or
+<code>Source::Salt(felt252)</code> as the source for randomness:</p>
+<ul>
+<li><code>Source::Nonce(ContractAddress)</code>: Uses the provided
+contract address internal nonce for randomness.<br />
+Each request will generate a different seed ensuring unique random
+values.</li>
+<li><code>Source::Salt(felt252)</code>: Uses a provided salt value for
+randomness.<br />
+Two requests with same salts will result in same random value.</li>
+</ul></li>
+</ol>
+<h2>Executing vRNG transactions</h2>
+<p>In order to execute a transaction that includes a
+<code>consume_random</code> call, you need to include a
+<code>request_random</code> transaction as the first transaction in the
+multicall. The <code>request_random</code> call allows our server to
+efficiently parse transactions that include a
+<code>consume_random</code> call internally.</p>
+<p><code>const call = await account.execute([   // Prefix the multicall with the request_random call   {     contractAddress: VRF_PROVIDER_ADDRESS,     entrypoint: 'request_random',     calldata: CallData.compile({       caller: GAME_CONTRACT,       // Using Source::Nonce(address)       source: {type: 0, address: account.address},       // Using Source::Salt(felt252)       // source: {type: 1, salt: 0x123}     }),   },   {     contractAddress: GAME_CONTRACT,     entrypoint: 'roll_dice',   }, ]);</code></p>
+<p><strong>Ensure that you call <code>consume_random</code> with the
+same <code>Source</code> as used in
+<code>request_random</code>.</strong></p>
+<h3>Important: Adding vRNG to Policies</h3>
+<p>When using the Cartridge Controller with vRNG, make sure to add the
+vRNG contract address and the <code>request_random</code> method to your
+policies. This allows the controller to pre-approve vRNG-related
+transactions, ensuring a seamless experience for your users.</p>
+<p>Add the following policy to your existing policies:</p>
+<p><code>const policies: Policy[] = [   // ... your existing policies ...   {     target: VRF_PROVIDER_ADDRESS,     method: "request_random",     description: "Allows requesting random numbers from the VRF provider",   }, ];</code></p>
+<p>This ensures that vRNG-related transactions can be executed without
+requiring additional user approval each time.</p>
+<p>By following these steps, you can integrate the vRNG Provider into
+your Starknet contract and generate verifiable random numbers for your
+onchain game or application.</p>
+<h2>Security Assumptions</h2>
+<p>During the Phase 0 deployment, the construction assumes the Provider
+has not revealed the private key and does not collude with players.</p>
+<p>In the future, we plan to move the Provider to a Trusted Execution
+Environment (TEE) in order to provide a more robust security model
+without compromising on performance.</p>
+<hr />
 </body>
 </html>

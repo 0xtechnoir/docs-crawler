@@ -1,6 +1,6 @@
 # Docs Scraper
 
-A simple, fast Python script for scraping technical documentation from websites and generating clean, formatted output perfect for NotebookLM or PDF generation.
+A simple, fast Python script for scraping technical documentation from websites and generating clean, formatted output perfect for NotebookLM or other AI ingestion.
 
 ## Features
 
@@ -49,40 +49,45 @@ A simple, fast Python script for scraping technical documentation from websites 
 
 ### Basic Usage
 
-Run the scraper with the default configuration:
+Run the scraper with your target documentation site:
 
 ```bash
-poetry run python docs-crawler.py
+poetry run python docs-crawler.py https://docs.example.com/
 ```
 
 This will:
-1. Crawl the docs.yom.net sitemap
+1. Crawl the specified site's sitemap (or fall back to crawling if no sitemap exists). Note - if no sitemap exists the ordering of pages with each section may not be correct.
 2. Extract clean content from all pages
 3. Generate three output files:
    - `doc_dump.md` - Clean markdown for NotebookLM
    - `doc_dump.html` - Beautiful HTML with Water.css styling
    - `doc_dump.pdf` - Professional PDF document
 
-### Customizing the Target Site
+### Examples
 
-To scrape a different documentation site, edit the configuration in `docs-crawler.py`:
+```bash
+# Scrape Cartridge documentation
+poetry run python docs-crawler.py https://docs.cartridge.gg/
+
+# Scrape any other documentation site
+poetry run python docs-crawler.py https://docs.yom.net/
+
+# Works with or without trailing slash
+poetry run python docs-crawler.py https://docs.example.com
+```
+
+### Advanced Configuration
+
+For advanced customization, you can still edit the configuration variables in `docs-crawler.py`:
 
 ```python
 # ---------- CONFIG ----------
-# Change this to scrape a different documentation site
-BASE          = "https://your-docs-site.com"  # Change this to your target site
-SITEMAP_URL   = f"{BASE}/sitemap.xml"        # Adjust sitemap path if needed
 UA            = "Your-crawler-name/1.0"       # Customize user agent
 OUT_FILE      = Path("your_output_name")      # Change output filename
 CONCURRENCY   = 6                             # Adjust concurrent requests
 MAX_RETRIES   = 3                             # Retry failed requests
 TIMEOUT       = 30                            # Request timeout in seconds
 # ----------------------------
-```
-
-**Example:** To scrape docs.tashi.gg:
-```python
-BASE = "https://docs.tashi.gg"
 ```
 
 ### Output Files
@@ -95,8 +100,7 @@ BASE = "https://docs.tashi.gg"
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `BASE` | Base URL of the documentation site | `https://docs.yom.net` |
-| `SITEMAP_URL` | URL of the sitemap.xml file | `{BASE}/sitemap.xml` |
+| `base_url` | Base URL of the documentation site (command line argument) | Required |
 | `UA` | User agent string for requests | `NotebookLM-prep-crawler/1.1` |
 | `OUT_FILE` | Base name for output files | `doc_dump` |
 | `CONCURRENCY` | Number of concurrent requests | `6` |
