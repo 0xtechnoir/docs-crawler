@@ -4,7 +4,9 @@ A simple, fast Python script for scraping technical documentation from websites 
 
 ## Features
 
+- **Universal Compatibility**: Works with any documentation site that has a sitemap (GitBook, Docusaurus, ReadTheDocs, etc.)
 - **Fast & Efficient**: Crawls documentation sites using sitemaps for optimal speed
+- **Smart Content Extraction**: Automatically finds and extracts main content from various site structures
 - **Clean Output**: Extracts only the essential content, removing navigation, ads, and other noise
 - **Multiple Formats**: Generates markdown, HTML, and PDF outputs
 - **NotebookLM Ready**: Creates clean markdown files perfect for AI documentation analysis
@@ -67,7 +69,8 @@ To scrape a different documentation site, edit the configuration in `docs-crawle
 
 ```python
 # ---------- CONFIG ----------
-BASE          = "https://your-docs-site.com"  # Change this
+# Change this to scrape a different documentation site
+BASE          = "https://your-docs-site.com"  # Change this to your target site
 SITEMAP_URL   = f"{BASE}/sitemap.xml"        # Adjust sitemap path if needed
 UA            = "Your-crawler-name/1.0"       # Customize user agent
 OUT_FILE      = Path("your_output_name")      # Change output filename
@@ -75,6 +78,11 @@ CONCURRENCY   = 6                             # Adjust concurrent requests
 MAX_RETRIES   = 3                             # Retry failed requests
 TIMEOUT       = 30                            # Request timeout in seconds
 # ----------------------------
+```
+
+**Example:** To scrape docs.tashi.gg:
+```python
+BASE = "https://docs.tashi.gg"
 ```
 
 ### Output Files

@@ -28,7 +28,8 @@ except ImportError:
     WEASYPRINT_AVAILABLE = False
 
 # ---------- CONFIG ----------
-BASE          = "https://docs.yom.net"
+# Change this to scrape a different documentation site
+BASE          = "https://docs.cartridge.gg/"  # Change this to your target site
 SITEMAP_URL   = f"{BASE}/sitemap.xml"
 UA            = "NotebookLM-prep-crawler/1.1 (+contact: you@example.com)"
 OUT_FILE      = Path("doc_dump")
@@ -95,23 +96,65 @@ async def page_markdown(session, url) -> Tuple[str, str]:
     soup = BeautifulSoup(r.text, "lxml")
     
     # Remove unwanted elements
-    for tag in soup(["script", "style", "noscript", "nav", "header", "footer", "aside", "img"]):
+    for tag in soup(["script", "style", "noscript", "nav", "header", "footer", "aside", "img", "svg", "iframe"]):
         tag.decompose()
     
     # Get title
     title = soup.find("title")
     title_text = title.get_text(strip=True) if title else url
     
-    # Get main content - try to find the main content area
-    main_content = soup.find("main") or soup.find("article") or soup.find("div", class_="content") or soup.find("div", id="content")
-    if not main_content:
+    # More comprehensive content extraction for different site structures
+    main_content = None
+    
+    # Try common documentation site selectors
+    selectors = [
+        "main", "article", 
+        "[role='main']", "[role='article']",
+        ".content", "#content", ".main", "#main",
+        ".doc-content", ".documentation-content", ".docs-content",
+        ".page-content", ".post-content", ".entry-content",
+        ".gitbook-root", ".gitbook-body", ".gitbook-content",
+        ".markdown-body", ".markdown-content",
+        ".doc-body", ".documentation-body"
+    ]
+    
+    for selector in selectors:
+        main_content = soup.select_one(selector)
+        if main_content and len(main_content.get_text(strip=True)) > 100:  # Ensure it has substantial content
+            break
+    
+    # If no specific content area found, try to find the largest text container
+    if not main_content or len(main_content.get_text(strip=True)) < 100:
+        # Find all divs and get the one with the most text content
+        divs = soup.find_all("div")
+        best_div = None
+        max_text_length = 0
+        
+        for div in divs:
+            text_length = len(div.get_text(strip=True))
+            if text_length > max_text_length and text_length > 200:  # Minimum content threshold
+                # Skip navigation-like divs
+                div_html = str(div).lower()
+                if not any(nav_word in div_html for nav_word in ['nav', 'menu', 'sidebar', 'header', 'footer']):
+                    best_div = div
+                    max_text_length = text_length
+        
+        if best_div:
+            main_content = best_div
+    
+    # Fallback to body if still no content
+    if not main_content or len(main_content.get_text(strip=True)) < 50:
         main_content = soup.find("body") or soup
     
     # Convert to clean markdown
-    body = md(str(main_content), heading_style="ATX", strip=["script", "style", "nav", "header", "footer", "img"]).strip()
+    body = md(str(main_content), heading_style="ATX", strip=["script", "style", "nav", "header", "footer", "img", "svg"]).strip()
     
-    hdr = f"## {title_text}\n\n**Source:** {url}\n\n"
-    return url, hdr + body + "\n\n---\n"
+    # Clean up the markdown
+    if body and len(body.strip()) > 50:  # Ensure we have meaningful content
+        hdr = f"## {title_text}\n\n**Source:** {url}\n\n"
+        return url, hdr + body + "\n\n---\n"
+    else:
+        return url, f"## {title_text}\n\n**Source:** {url}\n\n*No content extracted.*\n\n---\n"
 
 def save_markdown(md_text: str, out_path: Path):
     print(f"Markdown size: {len(md_text)/1024:.1f} KB")
@@ -197,8 +240,12 @@ async def main():
             await f
 
     print("Compiling markdown...")
+    # Extract domain name from BASE URL for the title
+    from urllib.parse import urlparse
+    domain = urlparse(BASE).netloc
+    
     all_md = (
-        f"# docs.yom.net — Snapshot ({time.strftime('%Y-%m-%d')})\n\n"
+        f"# {domain} — Snapshot ({time.strftime('%Y-%m-%d')})\n\n"
         "> Clean documentation content extracted from sitemap.\n\n"
         + "".join(results[u] for u in pages)
     )
